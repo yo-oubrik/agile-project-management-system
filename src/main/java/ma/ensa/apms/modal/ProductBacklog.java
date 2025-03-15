@@ -24,7 +24,7 @@ public class ProductBacklog {
     @OneToOne
     private Project project;
 
-    @OneToMany(mappedBy = "productBacklog")
+    @OneToMany(mappedBy = "productBacklog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserStory> userStories;
 
 }

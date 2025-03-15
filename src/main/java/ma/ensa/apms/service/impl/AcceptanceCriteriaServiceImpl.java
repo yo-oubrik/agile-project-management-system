@@ -1,29 +1,43 @@
 package ma.ensa.apms.service.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import lombok.RequiredArgsConstructor;
+
+import lombok.AllArgsConstructor;
+import ma.ensa.apms.dto.AcceptanceCriteriaCreationDTO;
 import ma.ensa.apms.dto.AcceptanceCriteriaDTO;
+import ma.ensa.apms.exception.EmptyResourcesException;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.AcceptanceCriteriaMapper;
+import ma.ensa.apms.modal.AcceptanceCriteria;
+import ma.ensa.apms.modal.UserStory;
 import ma.ensa.apms.repository.AcceptanceCriteriaRepository;
+import ma.ensa.apms.repository.UserStoryRepository;
 import ma.ensa.apms.service.AcceptanceCriteriaService;
 
 @Service
-@Transactional
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService {
 
-    private final AcceptanceCriteriaRepository acceptanceCriteriaRepository;
-    private final AcceptanceCriteriaMapper acceptanceCriteriaMapper;
+    private AcceptanceCriteriaRepository acceptanceCriteriaRepository;
+    private AcceptanceCriteriaMapper acceptanceCriteriaMapper;
+    private UserStoryRepository userStoryRepository;
 
     @Override
-    public AcceptanceCriteriaDTO save(AcceptanceCriteriaDTO criteriaDTO) {
-        var criteria = acceptanceCriteriaMapper.toEntity(criteriaDTO);
-        criteria = acceptanceCriteriaRepository.save(criteria);
-        return acceptanceCriteriaMapper.toDto(criteria);
+    @Transactional
+    public AcceptanceCriteriaDTO create(AcceptanceCriteriaCreationDTO dto) {
+        AcceptanceCriteria entity = acceptanceCriteriaMapper.toEntity(dto);
+
+        if (dto.getUserStoryId() != null) {
+            UserStory userStory = userStoryRepository.findById(dto.getUserStoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
+            entity.setUserStory(userStory);
+        }
+
+        entity = acceptanceCriteriaRepository.save(entity);
+        return acceptanceCriteriaMapper.toDto(entity);
     }
 
     @Override
@@ -35,21 +49,42 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
 
     @Override
     public List<AcceptanceCriteriaDTO> findAll() {
-        return acceptanceCriteriaRepository.findAll().stream()
+        List<AcceptanceCriteriaDTO> acceptanceCriteriaDTOs = acceptanceCriteriaRepository.findAll()
+                .stream()
                 .map(acceptanceCriteriaMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
+
+        if (acceptanceCriteriaDTOs.isEmpty()) {
+            throw new EmptyResourcesException("No acceptance criteria found");
+        }
+
+        return acceptanceCriteriaDTOs;
     }
 
     @Override
-    public AcceptanceCriteriaDTO update(Long id, AcceptanceCriteriaDTO criteriaDTO) {
-        var criteria = acceptanceCriteriaRepository.findById(id)
+    @Transactional
+    public AcceptanceCriteriaDTO update(Long id, AcceptanceCriteriaCreationDTO dto) {
+        if (id == null) {
+            throw new IllegalArgumentException("Acceptance Criteria ID is required");
+        }
+
+        AcceptanceCriteria existingEntity = acceptanceCriteriaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Acceptance Criteria not found"));
-        acceptanceCriteriaMapper.updateEntityFromDto(criteriaDTO, criteria);
-        criteria = acceptanceCriteriaRepository.save(criteria);
-        return acceptanceCriteriaMapper.toDto(criteria);
+
+        acceptanceCriteriaMapper.updateEntityFromDto(dto, existingEntity);
+
+        if (dto.getUserStoryId() != null) {
+            UserStory userStory = userStoryRepository.findById(dto.getUserStoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
+            existingEntity.setUserStory(userStory);
+        }
+
+        existingEntity = acceptanceCriteriaRepository.save(existingEntity);
+        return acceptanceCriteriaMapper.toDto(existingEntity);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         if (!acceptanceCriteriaRepository.existsById(id)) {
             throw new ResourceNotFoundException("Acceptance Criteria not found");

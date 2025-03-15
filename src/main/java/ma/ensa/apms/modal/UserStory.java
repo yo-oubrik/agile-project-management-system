@@ -3,16 +3,18 @@ package ma.ensa.apms.modal;
 import java.io.Serializable;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -54,14 +56,15 @@ public class UserStory implements Serializable {
     @NotNull(message = "Status is required")
     private UserStoryStatus status;
 
-    @ManyToOne
     @NotNull(message = "Product Backlog is required")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_backlog_id")
     private ProductBacklog productBacklog;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "epic_id")
     private Epic epic;
 
-    @OneToMany
-    @NotEmpty(message = "Acceptance Criterias are required")
+    @OneToMany(mappedBy = "userStory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AcceptanceCriteria> acceptanceCriterias;
 }
