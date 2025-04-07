@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 import ma.ensa.apms.modal.ProductBacklog;
 
 @Repository
-public interface ProductBacklogRepository extends JpaRepository<ProductBacklog, Long> {
-
+public interface ProductBacklogRepository extends JpaRepository<ProductBacklog, Long> { 
 }

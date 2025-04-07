@@ -1,6 +1,7 @@
 package ma.ensa.apms.modal;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -67,4 +68,12 @@ public class UserStory implements Serializable {
 
     @OneToMany(mappedBy = "userStory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AcceptanceCriteria> acceptanceCriterias;
+
+    public void addAcceptanceCriteria(AcceptanceCriteria acceptanceCriteria) {
+        if (acceptanceCriterias == null) {
+            acceptanceCriterias = new ArrayList<>();
+        }
+        acceptanceCriterias.add(acceptanceCriteria);
+        acceptanceCriteria.setUserStory(this);
+    }
 }

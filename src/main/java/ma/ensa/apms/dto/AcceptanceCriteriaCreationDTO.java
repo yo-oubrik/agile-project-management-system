@@ -1,6 +1,7 @@
 package ma.ensa.apms.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,9 @@ public class AcceptanceCriteriaCreationDTO {
     @NotBlank(message = "Then condition is required")
     @Size(min = 5, max = 255, message = "Then condition must be between 5 and 255 characters")
     private String then;
+
+    @NotNull(message = "Acceptance criteria met status is required")
+    private boolean met ;
 
     private Long userStoryId;
 }

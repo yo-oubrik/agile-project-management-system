@@ -4,15 +4,20 @@ import java.util.List;
 
 import ma.ensa.apms.dto.UserStoryCreationDTO;
 import ma.ensa.apms.dto.UserStoryDTO;
+import ma.ensa.apms.modal.enums.UserStoryStatus;
 
 public interface UserStoryService {
     UserStoryDTO create(UserStoryCreationDTO dto);
 
-    UserStoryDTO findById(Long id);
+    UserStoryDTO updateUserStory(Long id, UserStoryCreationDTO dto);
 
-    List<UserStoryDTO> findAll();
+    UserStoryDTO getUserStoryById(Long id);
 
-    UserStoryDTO update(Long id, UserStoryCreationDTO dto);
+    UserStoryDTO changeStatus(Long id, UserStoryStatus newStatus);
+
+    List<UserStoryDTO> getBacklogSorted(Long productBacklogId);
+
+    UserStoryDTO linkToEpic(Long storyId, Long epicId);
 
     void delete(Long id);
 }

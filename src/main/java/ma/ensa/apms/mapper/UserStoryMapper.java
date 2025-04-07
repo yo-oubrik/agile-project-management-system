@@ -12,8 +12,9 @@ import ma.ensa.apms.modal.UserStory;
 public interface UserStoryMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "productBacklog", ignore = true)
-    @Mapping(target = "epic", ignore = true)
+    @Mapping(target = "productBacklog.id", ignore = true)
+    @Mapping(target = "epic.id", source = "dto.epicId")
+    @Mapping(target = "acceptanceCriterias", ignore = true)
     UserStory toEntity(UserStoryCreationDTO dto);
 
     @Mapping(target = "productBacklogId", source = "productBacklog.id")
@@ -23,5 +24,6 @@ public interface UserStoryMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "productBacklog", ignore = true)
     @Mapping(target = "epic", ignore = true)
+    @Mapping(target = "acceptanceCriterias", ignore = true)
     void updateEntityFromDto(UserStoryCreationDTO dto, @MappingTarget UserStory entity);
 }

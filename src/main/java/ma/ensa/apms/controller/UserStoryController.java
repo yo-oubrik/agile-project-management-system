@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.apms.dto.UserStoryCreationDTO;
 import ma.ensa.apms.dto.UserStoryDTO;
+import ma.ensa.apms.modal.enums.UserStoryStatus;
 import ma.ensa.apms.service.UserStoryService;
 
 @RestController
@@ -32,20 +34,34 @@ public class UserStoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserStoryDTO> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(userStoryService.findById(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<UserStoryDTO>> findAll() {
-        return ResponseEntity.ok(userStoryService.findAll());
+    public ResponseEntity<UserStoryDTO> getUserStoryById(@PathVariable Long id) {
+        return ResponseEntity.ok(userStoryService.getUserStoryById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserStoryDTO> update(
+    public ResponseEntity<UserStoryDTO> updateUserStory(
             @PathVariable Long id,
             @Valid @RequestBody UserStoryCreationDTO dto) {
-        return ResponseEntity.ok(userStoryService.update(id, dto));
+        return ResponseEntity.ok(userStoryService.updateUserStory(id, dto));
+    }
+
+    @PutMapping("/{id}/link-to-epic/{epicId}")
+    public ResponseEntity<UserStoryDTO> linkToEpic(
+            @PathVariable Long id,
+            @PathVariable Long epicId){
+        return ResponseEntity.ok(userStoryService.linkToEpic(id, epicId));
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<UserStoryDTO> changeStatus(@PathVariable Long id, @RequestParam UserStoryStatus status) {
+        UserStoryDTO updated = userStoryService.changeStatus(id, status);
+        return ResponseEntity.ok(updated);
+    }
+
+    @GetMapping("/{productBacklogId}/sorted-by-priority")
+    public ResponseEntity<List<UserStoryDTO>> getAllSortedByPriority(@PathVariable Long productBacklogId) {
+        List<UserStoryDTO> stories = userStoryService.getBacklogSorted(productBacklogId);
+        return ResponseEntity.ok(stories);
     }
 
     @DeleteMapping("/{id}")
