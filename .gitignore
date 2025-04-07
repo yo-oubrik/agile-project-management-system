@@ -31,3 +31,25 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Logs
+logs/
+
+### SSH Keys
+ssh_keys
+ssh_keys.pub
+
+### Maven
+!**/src/main/**/target/
+!**/src/test/**/target/
+target/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
