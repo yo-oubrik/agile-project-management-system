@@ -52,18 +52,33 @@ public class UserStoryController {
         return ResponseEntity.ok(userStoryService.linkToEpic(id, epicId));
     }
 
-    @PutMapping("/{id}/status")
+    @PutMapping("/{id}/change-status")
     public ResponseEntity<UserStoryDTO> changeStatus(@PathVariable Long id, @RequestParam UserStoryStatus status) {
         UserStoryDTO updated = userStoryService.changeStatus(id, status);
         return ResponseEntity.ok(updated);
     }
 
-    @GetMapping("/{productBacklogId}/sorted-by-priority")
-    public ResponseEntity<List<UserStoryDTO>> getAllSortedByPriority(@PathVariable Long productBacklogId) {
-        List<UserStoryDTO> stories = userStoryService.getBacklogSorted(productBacklogId);
-        return ResponseEntity.ok(stories);
+    @GetMapping("/productBacklog={productBacklogId}&status={status}")
+    public ResponseEntity<List<UserStoryDTO>> getUserStoriesByStatus(
+            @PathVariable Long productBacklogId ,
+            @PathVariable UserStoryStatus status
+    ){
+        List<UserStoryDTO> userStories = userStoryService.getUserStoriesByStatusAndProductBacklogId(status,productBacklogId);
+        return ResponseEntity.ok(userStories);
     }
 
+    @GetMapping("/epic/{epicId}")
+    public ResponseEntity<List<UserStoryDTO>> getUserStoriesByEpicId(@PathVariable Long epicId) {
+        List<UserStoryDTO> userStories = userStoryService.getUserStoriesByEpicId(epicId);
+        return ResponseEntity.ok(userStories);
+    }
+
+    @GetMapping("/sprint/{sprintId}")
+    public ResponseEntity<List<UserStoryDTO>> getUserStoriesBySprintId(@PathVariable Long sprintId) {
+        List<UserStoryDTO> userStories = userStoryService.getUserStoriesBySprintId(sprintId);
+        return ResponseEntity.ok(userStories);
+    }
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         userStoryService.delete(id);

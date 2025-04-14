@@ -15,9 +15,11 @@ public interface UserStoryService {
 
     UserStoryDTO changeStatus(Long id, UserStoryStatus newStatus);
 
-    List<UserStoryDTO> getBacklogSorted(Long productBacklogId);
-
     UserStoryDTO linkToEpic(Long storyId, Long epicId);
+
+    List<UserStoryDTO> getUserStoriesByStatusAndProductBacklogId(UserStoryStatus statut , Long productBacklogId);
+    List<UserStoryDTO> getUserStoriesByEpicId(Long epicId);
+    List<UserStoryDTO> getUserStoriesBySprintId(Long sprintId);
 
     void delete(Long id);
 }

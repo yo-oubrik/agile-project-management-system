@@ -42,20 +42,15 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override
     @Transactional
     public UserStoryDTO create(UserStoryCreationDTO dto) {
-        // log.info("Creating user story: [{}]", dto);
         UserStory us = userStoryMapper.toEntity(dto);
 
         if (dto.getProductBacklogId() != null) {
             ProductBacklog productBacklog = productBacklogRepository.findById(dto.getProductBacklogId())
-                    .orElseThrow(() -> {
-                        // log.error("Product backlog with ID = {} not found", dto.getProductBacklogId());
-                        return new ResourceNotFoundException("Product backlog not found");
-                    });
+                    .orElseThrow(() -> new ResourceNotFoundException("Product backlog not found"));
             us.setProductBacklog(productBacklog);
         }
         us.setStatus(UserStoryStatus.TODO);
         userStoryRepository.save(us);
-        // log.info("User story created with ID ={}", us.getId());
         return userStoryMapper.toDto(us);
     }
 
@@ -69,30 +64,22 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override
     @Transactional
     public UserStoryDTO updateUserStory(Long id, UserStoryCreationDTO dto) {
-        // log.info("Updating user story with ID = {} and data = [{}]", id, dto);
         if (id == null) {
             // log.error("User story ID is null");
             throw new IllegalArgumentException("User story ID is required");
         }
 
         UserStory us = userStoryRepository.findById(id)
-                .orElseThrow(() -> {
-                    // log.error("User story with ID {} not found", id);
-                    return new ResourceNotFoundException("User story not found");
-                });
+                .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
 
         userStoryMapper.updateEntityFromDto(dto, us);
 
         if (dto.getProductBacklogId() != null) {
             ProductBacklog productBacklog = productBacklogRepository.findById(dto.getProductBacklogId())
-                    .orElseThrow(() -> {
-                        // log.error("Product backlog with ID = {} not found", dto.getProductBacklogId());
-                        return new ResourceNotFoundException("Product backlog not found");
-                    });
+                    .orElseThrow(() -> new ResourceNotFoundException("Product backlog not found"));
             us.setProductBacklog(productBacklog);
         }
         userStoryRepository.save(us);
-        // log.info("User story updated with ID = {}", id);
         return userStoryMapper.toDto(us);
     }
 
@@ -104,13 +91,8 @@ public class UserStoryServiceImpl implements UserStoryService {
      */
     @Override
     public UserStoryDTO getUserStoryById(Long id) {
-        // log.info("Loading user story with ID = {}", id);
         UserStory us = userStoryRepository.findById(id)
-                .orElseThrow(() -> {
-                    // log.error("User story with ID = {} not found", id);
-                    return new ResourceNotFoundException("User story not found");
-                });
-        // log.info("User story loaded with ID = {}", id);
+                .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
         return userStoryMapper.toDto(us);
     }
 
@@ -124,12 +106,8 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override
     @Transactional
     public UserStoryDTO changeStatus(Long id, UserStoryStatus newStatus) {
-        // log.info("Changing status of user story with ID = {} to {}", id, newStatus);
         UserStory story = userStoryRepository.findById(id)
-                .orElseThrow(() -> {
-                    // log.error("User story with ID = {} not found", id);
-                    return new ResourceNotFoundException("User story not found");
-                });
+                .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
 
         // verifier les criteres d'acceptance
         if (newStatus == UserStoryStatus.DONE) {
@@ -137,39 +115,12 @@ public class UserStoryServiceImpl implements UserStoryService {
                                 .allMatch(AcceptanceCriteria::isMet);
 
             if (!allMet) {
-                // log.error("Not all acceptance criteria met for user story with ID = {}", id);
                 throw new BusinessException("All acceptance criteria must be met to mark as DONE.");
             }
         }
 
         story.setStatus(newStatus);
-        // log.info("User story with ID = {} status changed to {}", id, newStatus);
         return userStoryMapper.toDto(userStoryRepository.save(story));
-    }
-
-    /**
-     * Return the list of user stories sorted by priority
-     * @param productBacklog the product backlog to which the user stories belong
-     * @return the list of user stories sorted by priority
-     * @throws IllegalArgumentException if the product backlog is null
-     * @throws ResourceNotFoundException if the product backlog is not found
-     */
-    @Override
-    public List<UserStoryDTO> getBacklogSorted(Long productBacklogId) {
-        // log.info("Loading all user stories sorted by priority for product backlog with ID = {}", productBacklogId);
-        if (productBacklogId == null) {
-            // log.error("Product backlog ID is null");
-            throw new IllegalArgumentException("Product backlog is required");
-        }
-        ProductBacklog productBacklog = productBacklogRepository.findById(productBacklogId)
-            .orElseThrow(() -> {
-                // log.error("Product backlog with ID = {} not found", productBacklogId);
-                return new ResourceNotFoundException("Product backlog not found");
-            });
-        // log.info("Product backlog with ID = {} found", productBacklogId);
-        return userStoryRepository.findByProductBacklogOrderByPriorityDesc(productBacklog).stream()
-                .map(userStoryMapper::toDto)
-                .collect(Collectors.toList());
     }
 
     /**
@@ -183,22 +134,90 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override
     @Transactional
     public UserStoryDTO linkToEpic(Long storyId, Long epicId) {
-        // log.info("Linking user story with ID = {} to epic with ID = {}", storyId, epicId);
         UserStory story = userStoryRepository.findById(storyId)
                 .orElseThrow(() -> new ResourceNotFoundException("User Story not found"));
+        Epic epic = epicRepository.findById(epicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Epic not found"));
         if(story.getStatus() != UserStoryStatus.TODO ){
-            // log.error("Cannot link an epic to a user story with status higher than TODO");
             throw new BusinessException("Cannot link an epic to a user story with status higher than TODO");
         }
-        // log.info("User story with ID = {} found", storyId);
-        Epic epic = epicRepository.findById(epicId).orElseThrow(() -> {
-            // log.error("Epic with ID = {} not found", epicId);
-            return new ResourceNotFoundException("Epic not found");
-        });
-        // log.info("Epic with ID = {} found", epicId);
         story.setEpic(epic);
-        // log.info("User story with ID = {} linked to epic with ID = {}", storyId, epicId);
         return userStoryMapper.toDto(userStoryRepository.save(story));
+    }
+
+    /**
+     * Move a user story to a sprint
+     * @param usId the id of the user story to move
+     * @param sprintId the id of the sprint to move to
+     * @return the moved user story
+     * @throws ResourceNotFoundException if the user story or sprint is not found
+     */
+    // @Override
+    // @Transactional
+    // public UserStoryDTO moveToSprint(Long usId, Long sprintId) {
+    //     UserStory us = userStoryRepository.findById(usId)
+    //             .orElseThrow(() -> new RuntimeException("US introuvable"));
+    //     Sprint sprint = sprintRepository.findById(sprintId)
+    //             .orElseThrow(() -> new RuntimeException("Sprint introuvable"));
+    //     us.setSprint(sprint);
+    //     return userStoryMapper.toDTO(userStoryRepository.save(us));
+    // }
+
+    /**
+     * Get all user stories by status
+     * @param statut the status of the user stories to get
+     * @return the list of user stories with the given status
+     */
+    @Override
+    public List<UserStoryDTO> getUserStoriesByStatusAndProductBacklogId(UserStoryStatus statut , Long productBacklogId) {
+        if (statut == null) {
+            throw new IllegalArgumentException("Status is required");
+        }
+        if (productBacklogId == null) {
+            throw new IllegalArgumentException("Product Backlog ID is required");
+        }
+        productBacklogRepository.findById(productBacklogId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product Backlog not found"));
+        return userStoryRepository.findByStatusAndProductBacklogId(statut , productBacklogId)
+                .stream()
+                .map(userStoryMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get all user stories by epic
+     * @param epicId the id of the epic to get user stories for
+     * @return the list of user stories linked to the given epic
+     */
+    @Override
+    public List<UserStoryDTO> getUserStoriesByEpicId(Long epicId) {
+        if (epicId == null) {
+            throw new IllegalArgumentException("Epic ID is required");
+        }
+        epicRepository.findById(epicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Epic not found"));
+        return userStoryRepository.findByEpicId(epicId)
+                .stream()
+                .map(userStoryMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get all user stories by sprint
+     * @param sprintId the id of the sprint to get user stories for
+     * @return the list of user stories linked to the given sprint
+     */
+    @Override
+    public List<UserStoryDTO> getUserStoriesBySprintId(Long sprintId) {
+        if (sprintId == null) {
+            throw new IllegalArgumentException("Sprint ID is required");
+        }
+        // sprintRepository.findById(sprintId)
+        //         .orElseThrow(() -> new ResourceNotFoundException("Sprint not found"));
+        return userStoryRepository.findBySprintId(sprintId)
+                .stream()
+                .map(userStoryMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -210,17 +229,11 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override
     @Transactional
     public void delete(Long id) {
-        // log.info("Deleting user story with ID = {}", id);
         UserStory story = userStoryRepository.findById(id)
-                .orElseThrow(() -> {
-                    // log.error("User Story with ID = {} not found", id);
-                    return new ResourceNotFoundException("User Story not found");
-                });
+                .orElseThrow(() -> new ResourceNotFoundException("User Story not found"));
         if (story.getStatus() != UserStoryStatus.TODO) {
-            // log.error("Cannot delete a user story with status higher than TODO");
             throw new BusinessException("Only stories in TODO state can be deleted.");
         }
-        // log.info("User story with ID = {} found", id);
         userStoryRepository.deleteById(id);
     }
 }
