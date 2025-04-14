@@ -407,11 +407,11 @@ class UserStoryServiceImplTest {
         @Test 
         void getUserStoriesBySprintId_ShouldReturnListOfUserStories() {
                 // Arrange
-                when(userStoryRepository.findBySprintId(1L)).thenReturn(List.of(userStory));
+                when(userStoryRepository.findBySprintBacklogId(1L)).thenReturn(List.of(userStory));
                 when(userStoryMapper.toDto(any())).thenReturn(userStoryDTO);
         
                 // Act
-                List<UserStoryDTO> result = userStoryService.getUserStoriesBySprintId(1L);
+                List<UserStoryDTO> result = userStoryService.getUserStoriesBySprintBacklogId(1L);
         
                 // Assert
                 assertThat(result).isNotEmpty();
@@ -424,7 +424,7 @@ class UserStoryServiceImplTest {
                 Long sprintId = null;
         
                 // Act & Assert
-                assertThatThrownBy(() -> userStoryService.getUserStoriesBySprintId(sprintId))
+                assertThatThrownBy(() -> userStoryService.getUserStoriesBySprintBacklogId(sprintId))
                                 .isInstanceOf(IllegalArgumentException.class)
                                 .hasMessage("Sprint ID is required");
         }

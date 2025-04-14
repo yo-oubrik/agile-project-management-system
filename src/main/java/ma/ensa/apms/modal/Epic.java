@@ -24,4 +24,7 @@ public class Epic {
 
     @OneToMany(mappedBy = "epic")
     private List<UserStory> userStories;
+    @ManyToOne
+    @JoinColumn(name = "product_backlog_id")
+    private ProductBacklog productBacklog;
 }

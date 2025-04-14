@@ -73,9 +73,9 @@ public class UserStoryController {
         return ResponseEntity.ok(userStories);
     }
 
-    @GetMapping("/sprint/{sprintId}")
-    public ResponseEntity<List<UserStoryDTO>> getUserStoriesBySprintId(@PathVariable Long sprintId) {
-        List<UserStoryDTO> userStories = userStoryService.getUserStoriesBySprintId(sprintId);
+    @GetMapping("/sprint-backlog/{sprintId}")
+    public ResponseEntity<List<UserStoryDTO>> getUserStoriesBySprintBacklogId(@PathVariable Long sprintId) {
+        List<UserStoryDTO> userStories = userStoryService.getUserStoriesBySprintBacklogId(sprintId);
         return ResponseEntity.ok(userStories);
     }
     

@@ -19,7 +19,7 @@ public interface UserStoryService {
 
     List<UserStoryDTO> getUserStoriesByStatusAndProductBacklogId(UserStoryStatus statut , Long productBacklogId);
     List<UserStoryDTO> getUserStoriesByEpicId(Long epicId);
-    List<UserStoryDTO> getUserStoriesBySprintId(Long sprintId);
+    List<UserStoryDTO> getUserStoriesBySprintBacklogId(Long sprintId);
 
     void delete(Long id);
 }

@@ -65,21 +65,14 @@ public class UserStory implements Serializable {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "epic_id")
-    private Epic epic; // List<Epic> epics;
+    private Epic epic;
 
-    // @NotNull(message = "Sprint Backlog is required")
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "sprint_backlog_id")
-    // private SprintBacklog sprintBacklog;
+    @NotNull(message = "Sprint Backlog is required")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sprint_backlog_id")
+    private SprintBacklog sprintBacklog;
 
     @OneToMany(mappedBy = "userStory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AcceptanceCriteria> acceptanceCriterias;
-
-    public void addAcceptanceCriteria(AcceptanceCriteria acceptanceCriteria) {
-        if (acceptanceCriterias == null) {
-            acceptanceCriterias = new ArrayList<>();
-        }
-        acceptanceCriterias.add(acceptanceCriteria);
-        acceptanceCriteria.setUserStory(this);
-    }
+    @Builder.Default
+    private List<AcceptanceCriteria> acceptanceCriterias = new ArrayList<>();
 }

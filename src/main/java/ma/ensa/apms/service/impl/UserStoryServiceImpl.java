@@ -208,13 +208,13 @@ public class UserStoryServiceImpl implements UserStoryService {
      * @return the list of user stories linked to the given sprint
      */
     @Override
-    public List<UserStoryDTO> getUserStoriesBySprintId(Long sprintId) {
+    public List<UserStoryDTO> getUserStoriesBySprintBacklogId(Long sprintId) {
         if (sprintId == null) {
             throw new IllegalArgumentException("Sprint ID is required");
         }
         // sprintRepository.findById(sprintId)
         //         .orElseThrow(() -> new ResourceNotFoundException("Sprint not found"));
-        return userStoryRepository.findBySprintId(sprintId)
+        return userStoryRepository.findBySprintBacklogId(sprintId)
                 .stream()
                 .map(userStoryMapper::toDto)
                 .collect(Collectors.toList());
