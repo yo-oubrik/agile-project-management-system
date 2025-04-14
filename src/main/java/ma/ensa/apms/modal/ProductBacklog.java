@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,14 @@ public class ProductBacklog {
     @OneToOne
     private Project project;
 
+    // The Value is The Current Time
+    private Date creationDate ;
+
+    private Date updatedAt ;
+
     @OneToMany(mappedBy = "productBacklog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserStory> userStories;
 
+    @OneToMany(mappedBy = "productBacklog", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Epic> epics;
 }

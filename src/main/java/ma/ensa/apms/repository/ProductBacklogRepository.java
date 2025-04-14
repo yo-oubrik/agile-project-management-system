@@ -7,4 +7,5 @@ import ma.ensa.apms.modal.ProductBacklog;
 
 @Repository
 public interface ProductBacklogRepository extends JpaRepository<ProductBacklog, Long> { 
+    
 }
