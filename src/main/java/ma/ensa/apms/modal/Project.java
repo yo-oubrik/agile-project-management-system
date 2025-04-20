@@ -40,10 +40,4 @@ public class Project extends BaseEntity implements Serializable {
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-
-    @OneToOne
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @JoinColumn(name = "product_backlog_id", referencedColumnName = "id")
-    private ProductBacklog productBacklog;
 }

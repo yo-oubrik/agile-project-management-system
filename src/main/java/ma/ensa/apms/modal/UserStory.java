@@ -22,8 +22,9 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import ma.ensa.apms.modal.enums.UserStoryPriority;
+import lombok.ToString;
 import ma.ensa.apms.modal.enums.UserStoryStatus;
 
 @Entity
@@ -50,9 +51,8 @@ public class UserStory implements Serializable {
     @NotBlank(message = "Benefit cannot be blank")
     private String benefit;
 
-    @Enumerated(EnumType.STRING)
     @NotNull(message = "Priority is required")
-    private UserStoryPriority priority;
+    private int priority;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Status is required")
@@ -74,5 +74,7 @@ public class UserStory implements Serializable {
 
     @OneToMany(mappedBy = "userStory", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<AcceptanceCriteria> acceptanceCriterias = new ArrayList<>();
 }

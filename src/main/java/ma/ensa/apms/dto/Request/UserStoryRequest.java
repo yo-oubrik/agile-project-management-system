@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
+import ma.ensa.apms.modal.enums.UserStoryStatus;
 
 @Data
 @Builder
@@ -25,13 +26,8 @@ public class UserStoryRequest {
     private String benefit;
 
     @NotNull(message = "Priority is required")
-    private String priority;
+    private int priority;
 
     @NotNull(message = "Status is required")
-    private String status;
-
-    @NotNull(message = "Product Backlog is required")
-    private UUID productBacklogId;
-
-    private UUID epicId;
+    private UserStoryStatus status;
 }
