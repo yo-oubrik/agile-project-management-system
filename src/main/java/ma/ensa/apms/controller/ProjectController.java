@@ -38,32 +38,32 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping
-    public ProjectResponse createProject(@RequestBody ProjectRequest request) {
+    public ProjectResponse createProject(@Valid @RequestBody ProjectRequest request) {
         return projectService.createProject(request);
     }
 
     @GetMapping("/status/{status}")
-    public List<ProjectResponse> getProjectsByStatus(@PathVariable ProjectStatus status) {
+    public List<ProjectResponse> getProjectsByStatus(@Valid @PathVariable ProjectStatus status) {
         return projectService.getProjectsByStatus(status);
     }
 
     @GetMapping("/range")
-    public List<ProjectResponse> getProjectsBetweenDates(@RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
+    public List<ProjectResponse> getProjectsBetweenDates(@Valid @RequestParam LocalDateTime startDate, @Valid @RequestParam LocalDateTime endDate) {
         return projectService.getProjectsBetweenDates(startDate, endDate);
     }
 
     @PatchMapping("/{id}/startDate")
-    public ProjectResponse updateProjectStartDate(@PathVariable UUID id, @RequestBody LocalDateTime startDate) {
+    public ProjectResponse updateProjectStartDate(@PathVariable UUID id, @Valid @RequestBody LocalDateTime startDate) {
         return projectService.updateProjectStartDate(id, startDate);
     }
 
     @PatchMapping("/{id}/endDate")
-    public ProjectResponse updateProjectEndDate(@PathVariable UUID id, @RequestBody LocalDateTime endDate) {
+    public ProjectResponse updateProjectEndDate(@PathVariable UUID id, @Valid @RequestBody LocalDateTime endDate) {
         return projectService.updateProjectEndDate(id, endDate);
     }
 
     @PatchMapping("/{id}/status")
-    public ProjectResponse updateProjectStatus(@PathVariable UUID id, @RequestBody ProjectStatus status) {
+    public ProjectResponse updateProjectStatus(@PathVariable UUID id, @Valid @RequestBody ProjectStatus status) {
         return projectService.updateProjectStatus(id, status);
     }
 

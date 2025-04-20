@@ -2,6 +2,7 @@ package ma.ensa.apms.service.impl;
 
 import ma.ensa.apms.dto.Request.ProjectRequest;
 import ma.ensa.apms.dto.Response.ProjectResponse;
+import ma.ensa.apms.exception.BusinessException;
 import ma.ensa.apms.modal.Project;
 import ma.ensa.apms.modal.enums.ProjectStatus;
 import ma.ensa.apms.repository.ProjectRepository;
@@ -50,6 +51,9 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
         project.setStartDate(startDate);
+        if(project.getEndDate() != null && project.getEndDate().isBefore(startDate)) {
+            throw new BusinessException("Start date must be before end date");
+        }
         project = projectRepository.save(project);
         return projectMapper.toResponse(project);
     }
@@ -59,6 +63,9 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
         project.setEndDate(endDate);
+        if(project.getStartDate() != null && project.getStartDate().isAfter(endDate)) {
+            throw new BusinessException("End date must be after start date");
+        }
         project = projectRepository.save(project);
         return projectMapper.toResponse(project);
     }

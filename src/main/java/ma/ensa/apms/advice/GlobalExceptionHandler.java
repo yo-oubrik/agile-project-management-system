@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+// import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 import ma.ensa.apms.dto.Response.ApiErrorResponse;
+import ma.ensa.apms.exception.BusinessException;
 import ma.ensa.apms.exception.DuplicateResourceException;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 
@@ -24,8 +26,17 @@ import ma.ensa.apms.exception.ResourceNotFoundException;
 public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ApiErrorResponse> handleBusinessException(
+            BusinessException ex,
+            WebRequest request) {
+        ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
+                ex.getMessage(), request);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse> handleValidationExceptions(
+    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException ex,
             WebRequest request) {
         Map<String, String> errors = new HashMap<>();
@@ -34,7 +45,7 @@ public class GlobalExceptionHandler {
 
         ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
                 "Validation failed", request);
-
+        errorResponse.setValidationErrors(errors);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
