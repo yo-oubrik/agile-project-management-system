@@ -1,6 +1,7 @@
 package ma.ensa.apms.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import ma.ensa.apms.dto.ProductBacklogRequest;
-import ma.ensa.apms.dto.ProductBacklogResponse;
+import ma.ensa.apms.dto.Request.ProductBacklogRequest;
+import ma.ensa.apms.dto.Response.ProductBacklogResponse;
 import ma.ensa.apms.dto.Response.UserStoryDTO;
 import ma.ensa.apms.service.ProductBacklogService;
 
@@ -32,18 +33,18 @@ public class ProductBacklogController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductBacklogResponse> getUserStoryById(@PathVariable Long id) {
+    public ResponseEntity<ProductBacklogResponse> getUserStoryById(@PathVariable UUID id) {
         return ResponseEntity.ok(productBacklogService.getProductBacklogById(id));
     }
 
     @GetMapping("/{id}/sorted-user-stories")
-    public ResponseEntity<List<UserStoryDTO>> getBacklogUserStoriesSorted(@PathVariable Long id) {
+    public ResponseEntity<List<UserStoryDTO>> getBacklogUserStoriesSorted(@PathVariable UUID id) {
         List<UserStoryDTO> userStories = productBacklogService.getBacklogUserStoriesSorted(id);
         return ResponseEntity.ok(userStories);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         productBacklogService.deleteProductBacklog(id);
         return ResponseEntity.noContent().build();
     }

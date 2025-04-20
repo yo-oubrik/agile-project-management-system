@@ -1,5 +1,7 @@
 package ma.ensa.apms.dto.Request;
 
+import java.util.UUID;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -29,7 +31,7 @@ public class UserStoryRequest {
     private String status;
 
     @NotNull(message = "Product Backlog is required")
-    private Long productBacklogId;
+    private UUID productBacklogId;
 
-    private Long epicId;
+    private UUID epicId;
 }

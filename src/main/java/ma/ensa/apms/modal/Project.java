@@ -10,6 +10,7 @@ import ma.ensa.apms.modal.enums.ProjectStatus;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -21,7 +22,7 @@ public class Project extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
     private String name;
     private String description;
     @Enumerated(EnumType.STRING)

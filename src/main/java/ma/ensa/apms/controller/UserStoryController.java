@@ -1,6 +1,7 @@
 package ma.ensa.apms.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,33 +35,33 @@ public class UserStoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserStoryDTO> getUserStoryById(@PathVariable Long id) {
+    public ResponseEntity<UserStoryDTO> getUserStoryById(@PathVariable UUID id) {
         return ResponseEntity.ok(userStoryService.getUserStoryById(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserStoryDTO> updateUserStory(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @Valid @RequestBody UserStoryRequest dto) {
         return ResponseEntity.ok(userStoryService.updateUserStory(id, dto));
     }
 
     @PutMapping("/{id}/link-to-epic/{epicId}")
     public ResponseEntity<UserStoryDTO> linkToEpic(
-            @PathVariable Long id,
-            @PathVariable Long epicId){
+            @PathVariable UUID id,
+            @PathVariable UUID epicId){
         return ResponseEntity.ok(userStoryService.linkToEpic(id, epicId));
     }
 
     @PutMapping("/{id}/change-status")
-    public ResponseEntity<UserStoryDTO> changeStatus(@PathVariable Long id, @RequestParam UserStoryStatus status) {
+    public ResponseEntity<UserStoryDTO> changeStatus(@PathVariable UUID id, @RequestParam UserStoryStatus status) {
         UserStoryDTO updated = userStoryService.changeStatus(id, status);
         return ResponseEntity.ok(updated);
     }
 
     @GetMapping("/productBacklog={productBacklogId}&status={status}")
     public ResponseEntity<List<UserStoryDTO>> getUserStoriesByStatus(
-            @PathVariable Long productBacklogId ,
+            @PathVariable UUID productBacklogId ,
             @PathVariable UserStoryStatus status
     ){
         List<UserStoryDTO> userStories = userStoryService.getUserStoriesByStatusAndProductBacklogId(status,productBacklogId);
@@ -68,19 +69,19 @@ public class UserStoryController {
     }
 
     @GetMapping("/epic/{epicId}")
-    public ResponseEntity<List<UserStoryDTO>> getUserStoriesByEpicId(@PathVariable Long epicId) {
+    public ResponseEntity<List<UserStoryDTO>> getUserStoriesByEpicId(@PathVariable UUID epicId) {
         List<UserStoryDTO> userStories = userStoryService.getUserStoriesByEpicId(epicId);
         return ResponseEntity.ok(userStories);
     }
 
     @GetMapping("/sprint-backlog/{sprintId}")
-    public ResponseEntity<List<UserStoryDTO>> getUserStoriesBySprintBacklogId(@PathVariable Long sprintId) {
+    public ResponseEntity<List<UserStoryDTO>> getUserStoriesBySprintBacklogId(@PathVariable UUID sprintId) {
         List<UserStoryDTO> userStories = userStoryService.getUserStoriesBySprintBacklogId(sprintId);
         return ResponseEntity.ok(userStories);
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         userStoryService.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,5 +1,6 @@
 package ma.ensa.apms.dto.Response;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -8,17 +9,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserStoryDTO {
+@Builder
+public class ProductBacklogResponse {
     private UUID id;
     private String name;
-    private String role;
-    private String feature;
-    private String benefit;
-    private String priority;
-    private String status;
-    private UUID productBacklogId;
-    private UUID epicId;
+    private  LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    
 }

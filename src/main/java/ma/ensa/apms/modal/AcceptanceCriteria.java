@@ -1,5 +1,7 @@
 package ma.ensa.apms.modal;
 
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,7 +27,7 @@ public class AcceptanceCriteria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @NotBlank(message = "Given condition is required")
     @Size(min = 5, max = 255, message = "Given condition must be between 5 and 255 characters")

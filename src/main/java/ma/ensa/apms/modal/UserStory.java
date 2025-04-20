@@ -3,6 +3,7 @@ package ma.ensa.apms.modal;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -34,7 +35,7 @@ public class UserStory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @NotBlank(message = "Title cannot be blank")
     @Size(min = 10, max = 100, message = "Title must be between 10 and 100 characters")

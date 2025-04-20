@@ -1,5 +1,7 @@
 package ma.ensa.apms.modal;
 
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,5 +19,5 @@ import lombok.NoArgsConstructor;
 public class SprintBacklog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 }

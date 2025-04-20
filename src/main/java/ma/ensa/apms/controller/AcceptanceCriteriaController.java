@@ -1,6 +1,7 @@
 package ma.ensa.apms.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import ma.ensa.apms.dto.AcceptanceCriteriaResponse;
 import ma.ensa.apms.dto.Request.AcceptanceCriteriaRequest;
+import ma.ensa.apms.dto.Response.AcceptanceCriteriaResponse;
 import ma.ensa.apms.service.AcceptanceCriteriaService;
 
 @RestController
@@ -32,7 +33,7 @@ public class AcceptanceCriteriaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AcceptanceCriteriaResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<AcceptanceCriteriaResponse> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(acceptanceCriteriaService.findById(id));
     }
 
@@ -43,13 +44,13 @@ public class AcceptanceCriteriaController {
 
     @PutMapping("/{id}")
     public ResponseEntity<AcceptanceCriteriaResponse> update(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @Valid @RequestBody AcceptanceCriteriaRequest dto) {
         return ResponseEntity.ok(acceptanceCriteriaService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         acceptanceCriteriaService.delete(id);
         return ResponseEntity.noContent().build();
     }

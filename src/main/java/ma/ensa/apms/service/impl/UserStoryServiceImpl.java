@@ -1,6 +1,7 @@
 package ma.ensa.apms.service.impl;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -63,7 +64,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      */
     @Override
     @Transactional
-    public UserStoryDTO updateUserStory(Long id, UserStoryRequest dto) {
+    public UserStoryDTO updateUserStory(UUID id, UserStoryRequest dto) {
         if (id == null) {
             // log.error("User story ID is null");
             throw new IllegalArgumentException("User story ID is required");
@@ -90,7 +91,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      * @throws ResourceNotFoundException if the user story is not found
      */
     @Override
-    public UserStoryDTO getUserStoryById(Long id) {
+    public UserStoryDTO getUserStoryById(UUID id) {
         UserStory us = userStoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
         return userStoryMapper.toDto(us);
@@ -105,7 +106,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      */
     @Override
     @Transactional
-    public UserStoryDTO changeStatus(Long id, UserStoryStatus newStatus) {
+    public UserStoryDTO changeStatus(UUID id, UserStoryStatus newStatus) {
         UserStory story = userStoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
 
@@ -133,7 +134,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      */
     @Override
     @Transactional
-    public UserStoryDTO linkToEpic(Long storyId, Long epicId) {
+    public UserStoryDTO linkToEpic(UUID storyId, UUID epicId) {
         UserStory story = userStoryRepository.findById(storyId)
                 .orElseThrow(() -> new ResourceNotFoundException("User Story not found"));
         Epic epic = epicRepository.findById(epicId)
@@ -154,7 +155,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      */
     // @Override
     // @Transactional
-    // public UserStoryDTO moveToSprint(Long usId, Long sprintId) {
+    // public UserStoryDTO moveToSprint(UUID usId, UUID sprintId) {
     //     UserStory us = userStoryRepository.findById(usId)
     //             .orElseThrow(() -> new RuntimeException("US introuvable"));
     //     Sprint sprint = sprintRepository.findById(sprintId)
@@ -169,7 +170,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      * @return the list of user stories with the given status
      */
     @Override
-    public List<UserStoryDTO> getUserStoriesByStatusAndProductBacklogId(UserStoryStatus statut , Long productBacklogId) {
+    public List<UserStoryDTO> getUserStoriesByStatusAndProductBacklogId(UserStoryStatus statut , UUID productBacklogId) {
         if (statut == null) {
             throw new IllegalArgumentException("Status is required");
         }
@@ -190,7 +191,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      * @return the list of user stories linked to the given epic
      */
     @Override
-    public List<UserStoryDTO> getUserStoriesByEpicId(Long epicId) {
+    public List<UserStoryDTO> getUserStoriesByEpicId(UUID epicId) {
         if (epicId == null) {
             throw new IllegalArgumentException("Epic ID is required");
         }
@@ -208,7 +209,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      * @return the list of user stories linked to the given sprint
      */
     @Override
-    public List<UserStoryDTO> getUserStoriesBySprintBacklogId(Long sprintId) {
+    public List<UserStoryDTO> getUserStoriesBySprintBacklogId(UUID sprintId) {
         if (sprintId == null) {
             throw new IllegalArgumentException("Sprint ID is required");
         }
@@ -228,7 +229,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      */
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void delete(UUID id) {
         UserStory story = userStoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User Story not found"));
         if (story.getStatus() != UserStoryStatus.TODO) {

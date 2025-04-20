@@ -1,15 +1,15 @@
 package ma.ensa.apms.service.impl;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-
-import ma.ensa.apms.dto.ProductBacklogRequest;
-import ma.ensa.apms.dto.ProductBacklogResponse;
+import ma.ensa.apms.dto.Request.ProductBacklogRequest;
+import ma.ensa.apms.dto.Response.ProductBacklogResponse;
 import ma.ensa.apms.dto.Response.UserStoryDTO;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.ProductBacklogMapper;
@@ -43,13 +43,13 @@ public class ProductBacklogServiceImpl implements ProductBacklogService {
 
     /**
      * Return the list of user stories sorted by priority
-     * @param productBacklog the product backlog to which the user stories belong
+     * @param productBacklog the product backlog to which the user stories beUUID
      * @return the list of user stories sorted by priority
      * @throws IllegalArgumentException if the product backlog is null
      * @throws ResourceNotFoundException if the product backlog is not found
      */
     @Override
-    public List<UserStoryDTO> getBacklogUserStoriesSorted(Long productBacklogId) {
+    public List<UserStoryDTO> getBacklogUserStoriesSorted(UUID productBacklogId) {
         if (productBacklogId == null) {
             throw new IllegalArgumentException("Product backlog is required");
         }
@@ -66,7 +66,7 @@ public class ProductBacklogServiceImpl implements ProductBacklogService {
      * @return the product backlog with the given id
      */
     @Override
-    public ProductBacklogResponse getProductBacklogById(Long id) {
+    public ProductBacklogResponse getProductBacklogById(UUID id) {
         ProductBacklog pb = productBacklogRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("backlog not found"));
 
@@ -75,7 +75,7 @@ public class ProductBacklogServiceImpl implements ProductBacklogService {
 
     @Override
     @Transactional
-    public void deleteProductBacklog(Long productBacklogId) {
+    public void deleteProductBacklog(UUID productBacklogId) {
         productBacklogRepository.deleteById(productBacklogId);
     }
 }

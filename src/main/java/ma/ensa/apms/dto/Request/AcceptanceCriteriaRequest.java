@@ -1,5 +1,7 @@
 package ma.ensa.apms.dto.Request;
 
+import java.util.UUID;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -24,5 +26,5 @@ public class AcceptanceCriteriaRequest {
     @NotNull(message = "Acceptance criteria met status is required")
     private boolean met ;
 
-    private Long userStoryId;
+    private UUID userStoryId;
 }

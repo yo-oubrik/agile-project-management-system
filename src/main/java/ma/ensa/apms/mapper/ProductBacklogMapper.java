@@ -3,8 +3,8 @@ package ma.ensa.apms.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import ma.ensa.apms.dto.ProductBacklogRequest;
-import ma.ensa.apms.dto.ProductBacklogResponse;
+import ma.ensa.apms.dto.Request.ProductBacklogRequest;
+import ma.ensa.apms.dto.Response.ProductBacklogResponse;
 import ma.ensa.apms.modal.ProductBacklog;
 
 @Mapper(componentModel = "spring")
