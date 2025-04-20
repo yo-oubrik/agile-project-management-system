@@ -1,6 +1,7 @@
 package ma.ensa.apms.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import ma.ensa.apms.dto.AcceptanceCriteriaCreationDTO;
-import ma.ensa.apms.dto.AcceptanceCriteriaDTO;
+import ma.ensa.apms.dto.Request.AcceptanceCriteriaRequest;
+import ma.ensa.apms.dto.Response.AcceptanceCriteriaResponse;
 import ma.ensa.apms.service.AcceptanceCriteriaService;
 
 @RestController
@@ -27,29 +28,29 @@ public class AcceptanceCriteriaController {
     private final AcceptanceCriteriaService acceptanceCriteriaService;
 
     @PostMapping
-    public ResponseEntity<AcceptanceCriteriaDTO> create(@Valid @RequestBody AcceptanceCriteriaCreationDTO dto) {
+    public ResponseEntity<AcceptanceCriteriaResponse> create(@Valid @RequestBody AcceptanceCriteriaRequest dto) {
         return new ResponseEntity<>(acceptanceCriteriaService.create(dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AcceptanceCriteriaDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<AcceptanceCriteriaResponse> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(acceptanceCriteriaService.findById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<AcceptanceCriteriaDTO>> findAll() {
+    public ResponseEntity<List<AcceptanceCriteriaResponse>> findAll() {
         return ResponseEntity.ok(acceptanceCriteriaService.findAll());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AcceptanceCriteriaDTO> update(
-            @PathVariable Long id,
-            @Valid @RequestBody AcceptanceCriteriaCreationDTO dto) {
+    public ResponseEntity<AcceptanceCriteriaResponse> update(
+            @PathVariable UUID id,
+            @Valid @RequestBody AcceptanceCriteriaRequest dto) {
         return ResponseEntity.ok(acceptanceCriteriaService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         acceptanceCriteriaService.delete(id);
         return ResponseEntity.noContent().build();
     }

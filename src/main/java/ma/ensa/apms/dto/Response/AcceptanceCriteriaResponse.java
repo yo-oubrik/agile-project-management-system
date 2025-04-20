@@ -1,4 +1,5 @@
-package ma.ensa.apms.dto;
+package ma.ensa.apms.dto.Response;
+import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AcceptanceCriteriaDTO {
-    private Long id;
+public class AcceptanceCriteriaResponse {
+    private UUID id;
     private String given;
     private String when;
     private String then;

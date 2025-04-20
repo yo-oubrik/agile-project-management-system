@@ -3,25 +3,20 @@ package ma.ensa.apms.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 
-import ma.ensa.apms.dto.UserStoryCreationDTO;
-import ma.ensa.apms.dto.UserStoryDTO;
+import ma.ensa.apms.dto.Request.UserStoryRequest;
+import ma.ensa.apms.dto.Response.UserStoryDTO;
 import ma.ensa.apms.modal.UserStory;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring" , unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserStoryMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "productBacklog", ignore = true)
-    @Mapping(target = "epic", ignore = true)
-    UserStory toEntity(UserStoryCreationDTO dto);
+    UserStory toEntity(UserStoryRequest dto);
 
-    @Mapping(target = "productBacklogId", source = "productBacklog.id")
-    @Mapping(target = "epicId", source = "epic.id")
     UserStoryDTO toDto(UserStory entity);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "productBacklog", ignore = true)
-    @Mapping(target = "epic", ignore = true)
-    void updateEntityFromDto(UserStoryCreationDTO dto, @MappingTarget UserStory entity);
+    void updateEntityFromDto(UserStoryRequest dto, @MappingTarget UserStory entity);
 }

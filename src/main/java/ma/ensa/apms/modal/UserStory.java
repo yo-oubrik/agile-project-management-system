@@ -1,7 +1,9 @@
 package ma.ensa.apms.modal;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -33,7 +35,7 @@ public class UserStory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @NotBlank(message = "Title cannot be blank")
     @Size(min = 10, max = 100, message = "Title must be between 10 and 100 characters")
@@ -61,10 +63,17 @@ public class UserStory implements Serializable {
     @JoinColumn(name = "product_backlog_id")
     private ProductBacklog productBacklog;
 
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "epic_id")
     private Epic epic;
 
+    @NotNull(message = "Sprint Backlog is required")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sprint_backlog_id")
+    private SprintBacklog sprintBacklog;
+
     @OneToMany(mappedBy = "userStory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AcceptanceCriteria> acceptanceCriterias;
+    @Builder.Default
+    private List<AcceptanceCriteria> acceptanceCriterias = new ArrayList<>();
 }

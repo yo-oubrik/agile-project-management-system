@@ -1,18 +1,26 @@
 package ma.ensa.apms.service;
 
 import java.util.List;
+import java.util.UUID;
 
-import ma.ensa.apms.dto.UserStoryCreationDTO;
-import ma.ensa.apms.dto.UserStoryDTO;
+import ma.ensa.apms.dto.Request.UserStoryRequest;
+import ma.ensa.apms.dto.Response.UserStoryDTO;
+import ma.ensa.apms.modal.enums.UserStoryStatus;
 
 public interface UserStoryService {
-    UserStoryDTO create(UserStoryCreationDTO dto);
+    UserStoryDTO create(UserStoryRequest dto);
 
-    UserStoryDTO findById(Long id);
+    UserStoryDTO updateUserStory(UUID id, UserStoryRequest dto);
 
-    List<UserStoryDTO> findAll();
+    UserStoryDTO getUserStoryById(UUID id);
 
-    UserStoryDTO update(Long id, UserStoryCreationDTO dto);
+    UserStoryDTO changeStatus(UUID id, UserStoryStatus newStatus);
 
-    void delete(Long id);
+    UserStoryDTO linkToEpic(UUID storyId, UUID epicId);
+
+    List<UserStoryDTO> getUserStoriesByStatusAndProductBacklogId(UserStoryStatus statut , UUID productBacklogId);
+    List<UserStoryDTO> getUserStoriesByEpicId(UUID epicId);
+    List<UserStoryDTO> getUserStoriesBySprintBacklogId(UUID sprintId);
+
+    void delete(UUID id);
 }

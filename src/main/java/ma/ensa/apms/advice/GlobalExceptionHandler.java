@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import ma.ensa.apms.exception.BusinessException;
 import ma.ensa.apms.exception.DuplicateResourceException;
 import ma.ensa.apms.exception.EmptyResourcesException;
 import ma.ensa.apms.exception.ResourceNotFoundException;
@@ -26,7 +27,7 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), error.getDefaultMessage());
         });
-        logger.info("Validation failed: {}", errors);
+        logger.warn("Validation failed for request {} with errors: {}", ex.getBindingResult().getObjectName(), errors);
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
@@ -59,4 +60,11 @@ public class GlobalExceptionHandler {
         logger.error("Unhandled exception", ex);
         return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<String> handleBusinessException(BusinessException ex) {
+        logger.error("Business exception: {}", ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }
