@@ -6,6 +6,9 @@ import ma.ensa.apms.dto.Response.ProjectResponse;
 import ma.ensa.apms.modal.enums.ProjectStatus;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ma.ensa.apms.service.ProjectService;
@@ -44,7 +47,7 @@ public class ProjectController {
         return projectService.getProjectsByStatus(status);
     }
 
-    @GetMapping("/range?startD")
+    @GetMapping("/range")
     public List<ProjectResponse> getProjectsBetweenDates(@RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
         return projectService.getProjectsBetweenDates(startDate, endDate);
     }
@@ -76,7 +79,7 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ProjectResponse updateProject(@PathVariable UUID id, @RequestBody ProjectRequest request) {
+    public ProjectResponse updateProject(@PathVariable UUID id, @Valid @RequestBody ProjectRequest request) {
         return projectService.updateProject(id, request);
     }
 
