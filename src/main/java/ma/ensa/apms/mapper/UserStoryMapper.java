@@ -15,7 +15,7 @@ public interface UserStoryMapper {
     @Mapping(target = "id", ignore = true)
     UserStory toEntity(UserStoryRequest dto);
 
-    UserStoryResponse toDto(UserStory entity);
+    UserStoryResponse toResponse(UserStory entity);
 
     @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(UserStoryRequest dto, @MappingTarget UserStory entity);

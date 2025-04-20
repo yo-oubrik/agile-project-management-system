@@ -58,7 +58,7 @@ public class ProductBacklogServiceImpl implements ProductBacklogService {
         productBacklogRepository.findById(productBacklogId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product backlog not found"));
         return userStoryRepository.findByProductBacklogIdOrderByPriorityAsc(productBacklogId).stream()
-                .map(userStoryMapper::toDto)
+                .map(userStoryMapper::toResponse)
                 .collect(Collectors.toList());
     }
 

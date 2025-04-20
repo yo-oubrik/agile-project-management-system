@@ -52,7 +52,7 @@ public class UserStoryServiceImpl implements UserStoryService {
         }
         us.setStatus(UserStoryStatus.TODO);
         userStoryRepository.save(us);
-        return userStoryMapper.toDto(us);
+        return userStoryMapper.toResponse(us);
     }
 
     /**
@@ -82,7 +82,7 @@ public class UserStoryServiceImpl implements UserStoryService {
             us.setProductBacklog(productBacklog);
         }
         userStoryRepository.save(us);
-        return userStoryMapper.toDto(us);
+        return userStoryMapper.toResponse(us);
     }
 
     /**
@@ -96,7 +96,7 @@ public class UserStoryServiceImpl implements UserStoryService {
     public UserStoryResponse getUserStoryById(UUID id) {
         UserStory us = userStoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
-        return userStoryMapper.toDto(us);
+        return userStoryMapper.toResponse(us);
     }
 
     /**
@@ -124,7 +124,7 @@ public class UserStoryServiceImpl implements UserStoryService {
         }
 
         story.setStatus(newStatus);
-        return userStoryMapper.toDto(userStoryRepository.save(story));
+        return userStoryMapper.toResponse(userStoryRepository.save(story));
     }
 
     /**
@@ -147,7 +147,7 @@ public class UserStoryServiceImpl implements UserStoryService {
             throw new BusinessException("Cannot link an epic to a user story with status higher than TODO");
         }
         story.setEpic(epic);
-        return userStoryMapper.toDto(userStoryRepository.save(story));
+        return userStoryMapper.toResponse(userStoryRepository.save(story));
     }
 
     /**
@@ -176,8 +176,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      * @return the list of user stories with the given status
      */
     @Override
-    public List<UserStoryResponse> getUserStoriesByStatusAndProductBacklogId(UserStoryStatus statut,
-            UUID productBacklogId) {
+    public List<UserStoryResponse> getUserStoriesByStatusAndProductBacklogId(UserStoryStatus statut , UUID productBacklogId) {
         if (statut == null) {
             throw new IllegalArgumentException("Status is required");
         }
@@ -188,7 +187,7 @@ public class UserStoryServiceImpl implements UserStoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product Backlog not found"));
         return userStoryRepository.findByStatusAndProductBacklogId(statut, productBacklogId)
                 .stream()
-                .map(userStoryMapper::toDto)
+                .map(userStoryMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -207,7 +206,7 @@ public class UserStoryServiceImpl implements UserStoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Epic not found"));
         return userStoryRepository.findByEpicId(epicId)
                 .stream()
-                .map(userStoryMapper::toDto)
+                .map(userStoryMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -226,7 +225,7 @@ public class UserStoryServiceImpl implements UserStoryService {
         // .orElseThrow(() -> new ResourceNotFoundException("Sprint not found"));
         return userStoryRepository.findBySprintBacklogId(sprintId)
                 .stream()
-                .map(userStoryMapper::toDto)
+                .map(userStoryMapper::toResponse)
                 .collect(Collectors.toList());
     }
 

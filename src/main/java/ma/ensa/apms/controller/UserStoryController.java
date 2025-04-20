@@ -61,10 +61,10 @@ public class UserStoryController {
 
     @GetMapping("/productBacklog={productBacklogId}&status={status}")
     public ResponseEntity<List<UserStoryResponse>> getUserStoriesByStatus(
-            @PathVariable UUID productBacklogId,
-            @PathVariable UserStoryStatus status) {
-        List<UserStoryResponse> userStories = userStoryService.getUserStoriesByStatusAndProductBacklogId(status,
-                productBacklogId);
+            @PathVariable UUID productBacklogId ,
+            @PathVariable UserStoryStatus status
+    ){
+        List<UserStoryResponse> userStories = userStoryService.getUserStoriesByStatusAndProductBacklogId(status,productBacklogId);
         return ResponseEntity.ok(userStories);
     }
 

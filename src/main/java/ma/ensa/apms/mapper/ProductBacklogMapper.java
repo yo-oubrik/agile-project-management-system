@@ -10,6 +10,7 @@ import ma.ensa.apms.modal.ProductBacklog;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductBacklogMapper {
+
     ProductBacklogResponse toResponse(ProductBacklog productBacklog);
 
     @Mapping(target = "id", ignore = true)
