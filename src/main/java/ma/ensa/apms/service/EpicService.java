@@ -1,18 +1,29 @@
 package ma.ensa.apms.service;
 
-import ma.ensa.apms.dto.EpicCreationDTO;
-import ma.ensa.apms.dto.EpicDTO;
-
 import java.util.List;
+import java.util.UUID;
+
+import ma.ensa.apms.dto.Request.EpicRequest;
+import ma.ensa.apms.dto.Response.EpicResponse;
+import ma.ensa.apms.dto.Response.ProductBacklogResponse;
+import ma.ensa.apms.dto.Response.UserStoryResponse;
 
 public interface EpicService {
-    EpicDTO create(EpicCreationDTO dto);
+    EpicResponse create(EpicRequest dto);
 
-    EpicDTO findById(Long id);
+    EpicResponse findById(UUID id);
 
-    List<EpicDTO> findAll();
+    List<EpicResponse> findAll();
 
-    EpicDTO update(Long id, EpicCreationDTO dto);
+    EpicResponse update(UUID id, EpicRequest dto);
 
-    void delete(Long id);
+    void delete(UUID id);
+
+    List<UserStoryResponse> getUserStoriesByEpicId(UUID epicId);
+
+    ProductBacklogResponse getProductBacklogByEpicId(UUID epicId);
+
+    EpicResponse addUserStoryToEpic(UUID epicId, UUID userStoryId);
+
+    long countEpics();
 }

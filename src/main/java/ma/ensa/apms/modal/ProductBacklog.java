@@ -19,14 +19,13 @@ import java.util.UUID;
 @Builder
 public class ProductBacklog extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @NotNull
     private String name;
 
     @OneToOne
     private Project project;
-
 
     @OneToMany(mappedBy = "productBacklog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserStory> userStories;

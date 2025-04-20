@@ -18,6 +18,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SprintBacklog {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 }

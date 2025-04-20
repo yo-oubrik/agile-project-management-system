@@ -10,7 +10,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import ma.ensa.apms.dto.Request.ProductBacklogRequest;
 import ma.ensa.apms.dto.Response.ProductBacklogResponse;
-import ma.ensa.apms.dto.Response.UserStoryDTO;
+import ma.ensa.apms.dto.Response.UserStoryResponse;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.ProductBacklogMapper;
 import ma.ensa.apms.mapper.UserStoryMapper;
@@ -30,6 +30,7 @@ public class ProductBacklogServiceImpl implements ProductBacklogService {
 
     /**
      * Create a new product backlog
+     * 
      * @param request the product backlog to create
      * @return the created product backlog
      */
@@ -43,18 +44,19 @@ public class ProductBacklogServiceImpl implements ProductBacklogService {
 
     /**
      * Return the list of user stories sorted by priority
+     * 
      * @param productBacklog the product backlog to which the user stories beUUID
      * @return the list of user stories sorted by priority
-     * @throws IllegalArgumentException if the product backlog is null
+     * @throws IllegalArgumentException  if the product backlog is null
      * @throws ResourceNotFoundException if the product backlog is not found
      */
     @Override
-    public List<UserStoryDTO> getBacklogUserStoriesSorted(UUID productBacklogId) {
+    public List<UserStoryResponse> getBacklogUserStoriesSorted(UUID productBacklogId) {
         if (productBacklogId == null) {
             throw new IllegalArgumentException("Product backlog is required");
         }
         productBacklogRepository.findById(productBacklogId)
-            .orElseThrow(() -> new ResourceNotFoundException("Product backlog not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product backlog not found"));
         return userStoryRepository.findByProductBacklogIdOrderByPriorityAsc(productBacklogId).stream()
                 .map(userStoryMapper::toDto)
                 .collect(Collectors.toList());
@@ -62,6 +64,7 @@ public class ProductBacklogServiceImpl implements ProductBacklogService {
 
     /**
      * Get a product backlog by id
+     * 
      * @param id the id of the product backlog to get
      * @return the product backlog with the given id
      */

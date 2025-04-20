@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import ma.ensa.apms.dto.Request.AcceptanceCriteriaRequest;
 import ma.ensa.apms.dto.Response.AcceptanceCriteriaResponse;
-import ma.ensa.apms.exception.EmptyResourcesException;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.AcceptanceCriteriaMapper;
 import ma.ensa.apms.modal.AcceptanceCriteria;
@@ -54,10 +53,6 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
                 .stream()
                 .map(acceptanceCriteriaMapper::toDto)
                 .toList();
-
-        if (acceptanceCriteriaDTOs.isEmpty()) {
-            throw new EmptyResourcesException("No acceptance criteria found");
-        }
 
         return acceptanceCriteriaDTOs;
     }

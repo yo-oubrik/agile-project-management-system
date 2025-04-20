@@ -1,77 +1,119 @@
 package ma.ensa.apms.service.impl;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
-import ma.ensa.apms.mapper.EpicMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.AllArgsConstructor;
-import ma.ensa.apms.dto.EpicCreationDTO;
-import ma.ensa.apms.dto.EpicDTO;
-import ma.ensa.apms.exception.EmptyResourcesException;
+import lombok.RequiredArgsConstructor;
+import ma.ensa.apms.dto.Request.EpicRequest;
+import ma.ensa.apms.dto.Response.EpicResponse;
+import ma.ensa.apms.dto.Response.ProductBacklogResponse;
+import ma.ensa.apms.dto.Response.UserStoryResponse;
 import ma.ensa.apms.exception.ResourceNotFoundException;
+import ma.ensa.apms.mapper.EpicMapper;
+import ma.ensa.apms.mapper.ProductBacklogMapper;
+import ma.ensa.apms.mapper.UserStoryMapper;
 import ma.ensa.apms.modal.Epic;
+import ma.ensa.apms.modal.UserStory;
 import ma.ensa.apms.repository.EpicRepository;
+import ma.ensa.apms.repository.UserStoryRepository;
 import ma.ensa.apms.service.EpicService;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EpicServiceImpl implements EpicService {
 
     private final EpicRepository epicRepository;
+    private final UserStoryRepository userStoryRepository;
     private final EpicMapper epicMapper;
+    private final UserStoryMapper userStoryMapper;
+    private final ProductBacklogMapper productBacklogMapper;
 
-    @Override
-    @Transactional
-    public EpicDTO create(EpicCreationDTO dto) {
-        Epic entity = epicMapper.toEntity(dto);
-        entity = epicRepository.save(entity);
-        return epicMapper.toDto(entity);
+    private int getUserStoriesCount(Epic epic) {
+        return epic.getUserStories() != null ? epic.getUserStories().size() : 0;
     }
 
     @Override
-    public EpicDTO findById(Long id) {
+    @Transactional
+    public EpicResponse create(EpicRequest dto) {
+        Epic epic = epicMapper.toEntity(dto);
+        return epicMapper.toDto(epicRepository.save(epic));
+    }
+
+    @Override
+    public EpicResponse findById(UUID id) {
+        Epic epic = getEpicById(id);
+        EpicResponse response = epicMapper.toDto(epic);
+        response.setUserStoriesCount(getUserStoriesCount(epic));
+        return response;
+    }
+
+    @Override
+    public List<EpicResponse> findAll() {
+        return epicRepository.findAll().stream()
+                .map(epic -> {
+                    EpicResponse response = epicMapper.toDto(epic);
+                    response.setUserStoriesCount(getUserStoriesCount(epic));
+                    return response;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public EpicResponse update(UUID id, EpicRequest dto) {
+        Epic epic = getEpicById(id);
+        epicMapper.updateEntityFromDto(dto, epic);
+        return epicMapper.toDto(epicRepository.save(epic));
+    }
+
+    @Override
+    @Transactional
+    public void delete(UUID id) {
+        Epic epic = getEpicById(id);
+        epicRepository.delete(epic);
+    }
+
+    @Override
+    @Transactional
+    public EpicResponse addUserStoryToEpic(UUID epicId, UUID userStoryId) {
+        Epic epic = getEpicById(epicId);
+        UserStory userStory = userStoryRepository.findById(userStoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("UserStory not found with id: " + userStoryId));
+
+        userStory.setEpic(epic);
+        userStoryRepository.save(userStory);
+
+        return epicMapper.toDto(epic);
+    }
+
+    private Epic getEpicById(UUID id) {
         return epicRepository.findById(id)
-                .map(epicMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Epic not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Epic not found with id: " + id));
     }
 
     @Override
-    public List<EpicDTO> findAll() {
-        List<EpicDTO> epicDTOs = epicRepository.findAll()
-                .stream()
-                .map(epicMapper::toDto)
-                .toList();
-
-        if (epicDTOs.isEmpty()) {
-            throw new EmptyResourcesException("No epics found");
-        }
-
-        return epicDTOs;
+    public List<UserStoryResponse> getUserStoriesByEpicId(UUID epicId) {
+        Epic epic = getEpicById(epicId);
+        return epic.getUserStories().stream()
+                .map(userStoryMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    @Transactional
-    public EpicDTO update(Long id, EpicCreationDTO dto) {
-        if (id == null) {
-            throw new IllegalArgumentException("Epic ID is required");
+    public ProductBacklogResponse getProductBacklogByEpicId(UUID epicId) {
+        Epic epic = getEpicById(epicId);
+        if (epic.getProductBacklog() == null) {
+            throw new ResourceNotFoundException("No product backlog is associated with epic id: " + epicId);
         }
-
-        Epic existingEntity = epicRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Epic not found"));
-
-        epicMapper.updateEntityFromDto(dto, existingEntity);
-        existingEntity = epicRepository.save(existingEntity);
-        return epicMapper.toDto(existingEntity);
+        return productBacklogMapper.toDto(epic.getProductBacklog());
     }
 
     @Override
-    @Transactional
-    public void delete(Long id) {
-        if (!epicRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Epic not found");
-        }
-        epicRepository.deleteById(id);
+    public long countEpics() {
+        return epicRepository.count();
     }
 }

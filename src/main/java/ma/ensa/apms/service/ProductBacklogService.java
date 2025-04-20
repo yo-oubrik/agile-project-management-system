@@ -5,11 +5,14 @@ import java.util.UUID;
 
 import ma.ensa.apms.dto.Request.ProductBacklogRequest;
 import ma.ensa.apms.dto.Response.ProductBacklogResponse;
-import ma.ensa.apms.dto.Response.UserStoryDTO;
+import ma.ensa.apms.dto.Response.UserStoryResponse;
 
 public interface ProductBacklogService {
     ProductBacklogResponse create(ProductBacklogRequest productBacklogRequest);
-    List<UserStoryDTO> getBacklogUserStoriesSorted(UUID productBacklogId);
+
+    List<UserStoryResponse> getBacklogUserStoriesSorted(UUID productBacklogId);
+
     ProductBacklogResponse getProductBacklogById(UUID id);
+
     void deleteProductBacklog(UUID id);
 }

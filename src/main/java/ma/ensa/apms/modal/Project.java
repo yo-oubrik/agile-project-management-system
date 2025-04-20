@@ -21,7 +21,7 @@ import java.util.UUID;
 public class Project extends BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
     private String description;

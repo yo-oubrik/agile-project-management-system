@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.apms.dto.Request.ProductBacklogRequest;
 import ma.ensa.apms.dto.Response.ProductBacklogResponse;
-import ma.ensa.apms.dto.Response.UserStoryDTO;
+import ma.ensa.apms.dto.Response.UserStoryResponse;
 import ma.ensa.apms.service.ProductBacklogService;
 
 @RestController
@@ -26,7 +26,7 @@ import ma.ensa.apms.service.ProductBacklogService;
 public class ProductBacklogController {
 
     private final ProductBacklogService productBacklogService;
-    
+
     @PostMapping
     public ResponseEntity<ProductBacklogResponse> create(@Valid @RequestBody ProductBacklogRequest request) {
         return new ResponseEntity<>(productBacklogService.create(request), HttpStatus.CREATED);
@@ -38,8 +38,8 @@ public class ProductBacklogController {
     }
 
     @GetMapping("/{id}/sorted-user-stories")
-    public ResponseEntity<List<UserStoryDTO>> getBacklogUserStoriesSorted(@PathVariable UUID id) {
-        List<UserStoryDTO> userStories = productBacklogService.getBacklogUserStoriesSorted(id);
+    public ResponseEntity<List<UserStoryResponse>> getBacklogUserStoriesSorted(@PathVariable UUID id) {
+        List<UserStoryResponse> userStories = productBacklogService.getBacklogUserStoriesSorted(id);
         return ResponseEntity.ok(userStories);
     }
 

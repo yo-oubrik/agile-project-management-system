@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import ma.ensa.apms.exception.BusinessException;
 import ma.ensa.apms.exception.DuplicateResourceException;
-import ma.ensa.apms.exception.EmptyResourcesException;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 
 @ControllerAdvice
@@ -41,12 +40,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleResourceNotFound(ResourceNotFoundException ex) {
         logger.info("Resource not found: {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(EmptyResourcesException.class)
-    public ResponseEntity<String> handleEmptyResources(EmptyResourcesException ex) {
-        logger.info("Empty resources: {}", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NO_CONTENT);
     }
 
     @ExceptionHandler(DuplicateResourceException.class)

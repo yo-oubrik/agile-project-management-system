@@ -14,7 +14,7 @@ import lombok.Getter;
 public class BaseEntity {
     @NotNull(message = "Created At cannot be null")
     @Column(updatable = false)
-    private  LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @NotNull(message = "Updated At cannot be null")
     private LocalDateTime updatedAt;
@@ -31,5 +31,3 @@ public class BaseEntity {
         this.updatedAt = LocalDateTime.now();
     }
 }
-    
-

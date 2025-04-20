@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.apms.dto.Request.UserStoryRequest;
-import ma.ensa.apms.dto.Response.UserStoryDTO;
+import ma.ensa.apms.dto.Response.UserStoryResponse;
 import ma.ensa.apms.modal.enums.UserStoryStatus;
 import ma.ensa.apms.service.UserStoryService;
 
@@ -30,56 +30,56 @@ public class UserStoryController {
     private final UserStoryService userStoryService;
 
     @PostMapping
-    public ResponseEntity<UserStoryDTO> create(@Valid @RequestBody UserStoryRequest dto) {
+    public ResponseEntity<UserStoryResponse> create(@Valid @RequestBody UserStoryRequest dto) {
         return new ResponseEntity<>(userStoryService.create(dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserStoryDTO> getUserStoryById(@PathVariable UUID id) {
+    public ResponseEntity<UserStoryResponse> getUserStoryById(@PathVariable UUID id) {
         return ResponseEntity.ok(userStoryService.getUserStoryById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserStoryDTO> updateUserStory(
+    public ResponseEntity<UserStoryResponse> updateUserStory(
             @PathVariable UUID id,
             @Valid @RequestBody UserStoryRequest dto) {
         return ResponseEntity.ok(userStoryService.updateUserStory(id, dto));
     }
 
     @PutMapping("/{id}/link-to-epic/{epicId}")
-    public ResponseEntity<UserStoryDTO> linkToEpic(
+    public ResponseEntity<UserStoryResponse> linkToEpic(
             @PathVariable UUID id,
-            @PathVariable UUID epicId){
+            @PathVariable UUID epicId) {
         return ResponseEntity.ok(userStoryService.linkToEpic(id, epicId));
     }
 
     @PutMapping("/{id}/change-status")
-    public ResponseEntity<UserStoryDTO> changeStatus(@PathVariable UUID id, @RequestParam UserStoryStatus status) {
-        UserStoryDTO updated = userStoryService.changeStatus(id, status);
+    public ResponseEntity<UserStoryResponse> changeStatus(@PathVariable UUID id, @RequestParam UserStoryStatus status) {
+        UserStoryResponse updated = userStoryService.changeStatus(id, status);
         return ResponseEntity.ok(updated);
     }
 
     @GetMapping("/productBacklog={productBacklogId}&status={status}")
-    public ResponseEntity<List<UserStoryDTO>> getUserStoriesByStatus(
-            @PathVariable UUID productBacklogId ,
-            @PathVariable UserStoryStatus status
-    ){
-        List<UserStoryDTO> userStories = userStoryService.getUserStoriesByStatusAndProductBacklogId(status,productBacklogId);
+    public ResponseEntity<List<UserStoryResponse>> getUserStoriesByStatus(
+            @PathVariable UUID productBacklogId,
+            @PathVariable UserStoryStatus status) {
+        List<UserStoryResponse> userStories = userStoryService.getUserStoriesByStatusAndProductBacklogId(status,
+                productBacklogId);
         return ResponseEntity.ok(userStories);
     }
 
     @GetMapping("/epic/{epicId}")
-    public ResponseEntity<List<UserStoryDTO>> getUserStoriesByEpicId(@PathVariable UUID epicId) {
-        List<UserStoryDTO> userStories = userStoryService.getUserStoriesByEpicId(epicId);
+    public ResponseEntity<List<UserStoryResponse>> getUserStoriesByEpicId(@PathVariable UUID epicId) {
+        List<UserStoryResponse> userStories = userStoryService.getUserStoriesByEpicId(epicId);
         return ResponseEntity.ok(userStories);
     }
 
     @GetMapping("/sprint-backlog/{sprintId}")
-    public ResponseEntity<List<UserStoryDTO>> getUserStoriesBySprintBacklogId(@PathVariable UUID sprintId) {
-        List<UserStoryDTO> userStories = userStoryService.getUserStoriesBySprintBacklogId(sprintId);
+    public ResponseEntity<List<UserStoryResponse>> getUserStoriesBySprintBacklogId(@PathVariable UUID sprintId) {
+        List<UserStoryResponse> userStories = userStoryService.getUserStoriesBySprintBacklogId(sprintId);
         return ResponseEntity.ok(userStories);
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         userStoryService.delete(id);

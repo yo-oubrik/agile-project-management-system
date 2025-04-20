@@ -34,7 +34,7 @@ import ma.ensa.apms.modal.enums.UserStoryStatus;
 public class UserStory implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @NotBlank(message = "Title cannot be blank")
@@ -63,7 +63,6 @@ public class UserStory implements Serializable {
     @JoinColumn(name = "product_backlog_id")
     private ProductBacklog productBacklog;
 
-    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "epic_id")
     private Epic epic;

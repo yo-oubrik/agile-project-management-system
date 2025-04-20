@@ -1,42 +1,55 @@
 package ma.ensa.apms.modal;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Builder
-public class Epic {
+public class Epic extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @NotBlank(message = "Name is required")
     @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
     private String name;
 
-    @Size(max = 500, message = "Description must be less than 500 characters")
+    @Column(columnDefinition = "TEXT")
+    @Size(max = 1000, message = "Description must not exceed 1000 characters")
     private String description;
 
-    @Min(value = 1, message = "Priority must be at least 1")
-    @Max(value = 10, message = "Priority must be at most 10")
-    private int priority;
-
-    @NotBlank(message = "Status is required")
-    private String status;
-
-    @OneToMany(mappedBy = "epic")
+    @OneToMany(mappedBy = "epic", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<UserStory> userStories;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_backlog_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private ProductBacklog productBacklog;
 }
