@@ -1,4 +1,4 @@
-package ma.ensa.apms.dto;
+package ma.ensa.apms.dto.Request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserStoryCreationDTO {
+public class UserStoryRequest {
     @NotBlank(message = "Title cannot be blank")
     @Size(min = 10, max = 100, message = "Title must be between 10 and 100 characters")
     private String name;

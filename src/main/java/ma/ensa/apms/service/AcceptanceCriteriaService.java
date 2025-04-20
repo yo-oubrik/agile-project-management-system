@@ -2,17 +2,17 @@ package ma.ensa.apms.service;
 
 import java.util.List;
 
-import ma.ensa.apms.dto.AcceptanceCriteriaCreationDTO;
-import ma.ensa.apms.dto.AcceptanceCriteriaDTO;
+import ma.ensa.apms.dto.AcceptanceCriteriaResponse;
+import ma.ensa.apms.dto.Request.AcceptanceCriteriaRequest;
 
 public interface AcceptanceCriteriaService {
-    AcceptanceCriteriaDTO create(AcceptanceCriteriaCreationDTO dto);
+    AcceptanceCriteriaResponse create(AcceptanceCriteriaRequest dto);
 
-    AcceptanceCriteriaDTO findById(Long id);
+    AcceptanceCriteriaResponse findById(Long id);
 
-    List<AcceptanceCriteriaDTO> findAll();
+    List<AcceptanceCriteriaResponse> findAll();
 
-    public AcceptanceCriteriaDTO update(Long id, AcceptanceCriteriaCreationDTO dto);
+    public AcceptanceCriteriaResponse update(Long id, AcceptanceCriteriaRequest dto);
 
     void delete(Long id);
 }

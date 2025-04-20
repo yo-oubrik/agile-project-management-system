@@ -4,8 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import ma.ensa.apms.dto.AcceptanceCriteriaCreationDTO;
-import ma.ensa.apms.dto.AcceptanceCriteriaDTO;
+import ma.ensa.apms.dto.AcceptanceCriteriaResponse;
+import ma.ensa.apms.dto.Request.AcceptanceCriteriaRequest;
 import ma.ensa.apms.modal.AcceptanceCriteria;
 
 @Mapper(componentModel = "spring")
@@ -13,11 +13,11 @@ public interface AcceptanceCriteriaMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userStory", ignore = true)
-    AcceptanceCriteria toEntity(AcceptanceCriteriaCreationDTO dto);
+    AcceptanceCriteria toEntity(AcceptanceCriteriaRequest dto);
 
-    AcceptanceCriteriaDTO toDto(AcceptanceCriteria entity);
+    AcceptanceCriteriaResponse toDto(AcceptanceCriteria entity);
 
     @Mapping(target = "userStory", ignore = true)
     @Mapping(target = "id", ignore = true)
-    void updateEntityFromDto(AcceptanceCriteriaCreationDTO dto, @MappingTarget AcceptanceCriteria entity);
+    void updateEntityFromDto(AcceptanceCriteriaRequest dto, @MappingTarget AcceptanceCriteria entity);
 }

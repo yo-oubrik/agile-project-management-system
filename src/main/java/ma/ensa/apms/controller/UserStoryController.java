@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import ma.ensa.apms.dto.UserStoryCreationDTO;
-import ma.ensa.apms.dto.UserStoryDTO;
+import ma.ensa.apms.dto.Request.UserStoryRequest;
+import ma.ensa.apms.dto.Response.UserStoryDTO;
 import ma.ensa.apms.modal.enums.UserStoryStatus;
 import ma.ensa.apms.service.UserStoryService;
 
@@ -29,7 +29,7 @@ public class UserStoryController {
     private final UserStoryService userStoryService;
 
     @PostMapping
-    public ResponseEntity<UserStoryDTO> create(@Valid @RequestBody UserStoryCreationDTO dto) {
+    public ResponseEntity<UserStoryDTO> create(@Valid @RequestBody UserStoryRequest dto) {
         return new ResponseEntity<>(userStoryService.create(dto), HttpStatus.CREATED);
     }
 
@@ -41,7 +41,7 @@ public class UserStoryController {
     @PutMapping("/{id}")
     public ResponseEntity<UserStoryDTO> updateUserStory(
             @PathVariable Long id,
-            @Valid @RequestBody UserStoryCreationDTO dto) {
+            @Valid @RequestBody UserStoryRequest dto) {
         return ResponseEntity.ok(userStoryService.updateUserStory(id, dto));
     }
 

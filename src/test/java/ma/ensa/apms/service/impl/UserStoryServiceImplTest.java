@@ -16,8 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import ma.ensa.apms.dto.UserStoryCreationDTO;
-import ma.ensa.apms.dto.UserStoryDTO;
+import ma.ensa.apms.dto.Request.UserStoryRequest;
+import ma.ensa.apms.dto.Response.UserStoryDTO;
 import ma.ensa.apms.exception.BusinessException;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.UserStoryMapper;
@@ -51,8 +51,8 @@ class UserStoryServiceImplTest {
 
         private UserStory userStory;
         private UserStoryDTO userStoryDTO;
-        private UserStoryCreationDTO creationDTO;
-        private UserStoryCreationDTO updateDTO;
+        private UserStoryRequest creationDTO;
+        private UserStoryRequest updateDTO;
         private ProductBacklog productBacklog;
         private Epic epic ; 
 
@@ -85,7 +85,7 @@ class UserStoryServiceImplTest {
                                 .productBacklogId(1L)
                                 .build();
 
-                creationDTO = UserStoryCreationDTO.builder()
+                creationDTO = UserStoryRequest.builder()
                                 .name("Test Story")
                                 .role("Test Role")
                                 .feature("Test Feature")
@@ -95,7 +95,7 @@ class UserStoryServiceImplTest {
                                 .productBacklogId(1L)
                                 .build();
 
-                updateDTO = UserStoryCreationDTO.builder()
+                updateDTO = UserStoryRequest.builder()
                                 .name("Updated Story")
                                 .role("Updated Role")
                                 .feature("Updated Feature")
@@ -118,7 +118,7 @@ class UserStoryServiceImplTest {
         @Test
         void create_ShouldReturnSavedUserStory() {
                 // Arrange
-                when(userStoryMapper.toEntity(any(UserStoryCreationDTO.class)))
+                when(userStoryMapper.toEntity(any(UserStoryRequest.class)))
                                 .thenReturn(userStory);
                 when(productBacklogRepository.findById(1L)).thenReturn(Optional.of(productBacklog));
                 when(userStoryRepository.save(any())).thenReturn(userStory);
@@ -136,7 +136,7 @@ class UserStoryServiceImplTest {
         @Test
         void create_ShouldThrowResourceNotFoundException_WhenProductBacklogNotFound() {
                 // Arrange
-                when(userStoryMapper.toEntity(any(UserStoryCreationDTO.class)))
+                when(userStoryMapper.toEntity(any(UserStoryRequest.class)))
                                 .thenReturn(userStory);
                 when(productBacklogRepository.findById(1L)).thenReturn(Optional.empty());
 

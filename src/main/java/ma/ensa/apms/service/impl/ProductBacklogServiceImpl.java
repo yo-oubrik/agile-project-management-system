@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 
 import ma.ensa.apms.dto.ProductBacklogRequest;
 import ma.ensa.apms.dto.ProductBacklogResponse;
-import ma.ensa.apms.dto.UserStoryDTO;
+import ma.ensa.apms.dto.Response.UserStoryDTO;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.ProductBacklogMapper;
 import ma.ensa.apms.mapper.UserStoryMapper;

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import ma.ensa.apms.dto.AcceptanceCriteriaCreationDTO;
-import ma.ensa.apms.dto.AcceptanceCriteriaDTO;
+import ma.ensa.apms.dto.AcceptanceCriteriaResponse;
+import ma.ensa.apms.dto.Request.AcceptanceCriteriaRequest;
 import ma.ensa.apms.service.AcceptanceCriteriaService;
 
 @RestController
@@ -27,24 +27,24 @@ public class AcceptanceCriteriaController {
     private final AcceptanceCriteriaService acceptanceCriteriaService;
 
     @PostMapping
-    public ResponseEntity<AcceptanceCriteriaDTO> create(@Valid @RequestBody AcceptanceCriteriaCreationDTO dto) {
+    public ResponseEntity<AcceptanceCriteriaResponse> create(@Valid @RequestBody AcceptanceCriteriaRequest dto) {
         return new ResponseEntity<>(acceptanceCriteriaService.create(dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AcceptanceCriteriaDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<AcceptanceCriteriaResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(acceptanceCriteriaService.findById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<AcceptanceCriteriaDTO>> findAll() {
+    public ResponseEntity<List<AcceptanceCriteriaResponse>> findAll() {
         return ResponseEntity.ok(acceptanceCriteriaService.findAll());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AcceptanceCriteriaDTO> update(
+    public ResponseEntity<AcceptanceCriteriaResponse> update(
             @PathVariable Long id,
-            @Valid @RequestBody AcceptanceCriteriaCreationDTO dto) {
+            @Valid @RequestBody AcceptanceCriteriaRequest dto) {
         return ResponseEntity.ok(acceptanceCriteriaService.update(id, dto));
     }
 

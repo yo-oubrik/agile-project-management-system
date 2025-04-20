@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AcceptanceCriteriaDTO {
+public class AcceptanceCriteriaResponse {
     private Long id;
     private String given;
     private String when;

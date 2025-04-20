@@ -21,8 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ma.ensa.apms.dto.AcceptanceCriteriaCreationDTO;
-import ma.ensa.apms.dto.AcceptanceCriteriaDTO;
+import ma.ensa.apms.dto.AcceptanceCriteriaResponse;
+import ma.ensa.apms.dto.Request.AcceptanceCriteriaRequest;
 import ma.ensa.apms.service.AcceptanceCriteriaService;
 
 @WebMvcTest(AcceptanceCriteriaController.class)
@@ -37,19 +37,19 @@ class AcceptanceCriteriaControllerTest {
     @MockitoBean
     private AcceptanceCriteriaService acceptanceCriteriaService;
 
-    private AcceptanceCriteriaDTO acceptanceCriteriaDTO;
-    private AcceptanceCriteriaCreationDTO creationDTO;
+    private AcceptanceCriteriaResponse acceptanceCriteriaDTO;
+    private AcceptanceCriteriaRequest creationDTO;
 
     @BeforeEach
     void setUp() {
-        acceptanceCriteriaDTO = AcceptanceCriteriaDTO.builder()
+        acceptanceCriteriaDTO = AcceptanceCriteriaResponse.builder()
                 .id(1L)
                 .given("Given test condition")
                 .when("When test action")
                 .then("Then test result")
                 .build();
 
-        creationDTO = AcceptanceCriteriaCreationDTO.builder()
+        creationDTO = AcceptanceCriteriaRequest.builder()
                 .given("Given test condition")
                 .when("When test action")
                 .then("Then test result")

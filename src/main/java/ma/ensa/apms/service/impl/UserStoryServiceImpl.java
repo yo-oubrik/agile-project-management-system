@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
-import ma.ensa.apms.dto.UserStoryCreationDTO;
-import ma.ensa.apms.dto.UserStoryDTO;
+import ma.ensa.apms.dto.Request.UserStoryRequest;
+import ma.ensa.apms.dto.Response.UserStoryDTO;
 import ma.ensa.apms.exception.BusinessException;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.UserStoryMapper;
@@ -41,7 +41,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      */
     @Override
     @Transactional
-    public UserStoryDTO create(UserStoryCreationDTO dto) {
+    public UserStoryDTO create(UserStoryRequest dto) {
         UserStory us = userStoryMapper.toEntity(dto);
 
         if (dto.getProductBacklogId() != null) {
@@ -63,7 +63,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      */
     @Override
     @Transactional
-    public UserStoryDTO updateUserStory(Long id, UserStoryCreationDTO dto) {
+    public UserStoryDTO updateUserStory(Long id, UserStoryRequest dto) {
         if (id == null) {
             // log.error("User story ID is null");
             throw new IllegalArgumentException("User story ID is required");

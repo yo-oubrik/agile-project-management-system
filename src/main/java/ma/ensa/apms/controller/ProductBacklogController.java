@@ -16,7 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.ensa.apms.dto.ProductBacklogRequest;
 import ma.ensa.apms.dto.ProductBacklogResponse;
-import ma.ensa.apms.dto.UserStoryDTO;
+import ma.ensa.apms.dto.Response.UserStoryDTO;
 import ma.ensa.apms.service.ProductBacklogService;
 
 @RestController

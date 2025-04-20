@@ -16,8 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import ma.ensa.apms.dto.AcceptanceCriteriaCreationDTO;
-import ma.ensa.apms.dto.AcceptanceCriteriaDTO;
+import ma.ensa.apms.dto.AcceptanceCriteriaResponse;
+import ma.ensa.apms.dto.Request.AcceptanceCriteriaRequest;
 import ma.ensa.apms.exception.EmptyResourcesException;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.AcceptanceCriteriaMapper;
@@ -42,9 +42,9 @@ class AcceptanceCriteriaServiceImplTest {
         private AcceptanceCriteriaServiceImpl acceptanceCriteriaService;
 
         private AcceptanceCriteria acceptanceCriteria;
-        private AcceptanceCriteriaDTO acceptanceCriteriaDTO;
-        private AcceptanceCriteriaCreationDTO creationDTO;
-        private AcceptanceCriteriaCreationDTO updateDTO;
+        private AcceptanceCriteriaResponse acceptanceCriteriaDTO;
+        private AcceptanceCriteriaRequest creationDTO;
+        private AcceptanceCriteriaRequest updateDTO;
         private UserStory userStory;
 
         @BeforeEach
@@ -62,21 +62,21 @@ class AcceptanceCriteriaServiceImplTest {
                                 .userStory(userStory)
                                 .build();
 
-                acceptanceCriteriaDTO = AcceptanceCriteriaDTO.builder()
+                acceptanceCriteriaDTO = AcceptanceCriteriaResponse.builder()
                                 .id(1L)
                                 .given("Given test condition")
                                 .when("When test action")
                                 .then("Then test result")
                                 .build();
 
-                creationDTO = AcceptanceCriteriaCreationDTO.builder()
+                creationDTO = AcceptanceCriteriaRequest.builder()
                                 .given("Given test condition")
                                 .when("When test action")
                                 .then("Then test result")
                                 .userStoryId(1L)
                                 .build();
 
-                updateDTO = AcceptanceCriteriaCreationDTO.builder()
+                updateDTO = AcceptanceCriteriaRequest.builder()
                                 .given("Updated given")
                                 .when("Updated when")
                                 .then("Updated then")
@@ -87,14 +87,14 @@ class AcceptanceCriteriaServiceImplTest {
         @Test
         void create_ShouldReturnSavedAcceptanceCriteria() {
                 // Arrange
-                when(acceptanceCriteriaMapper.toEntity(any(AcceptanceCriteriaCreationDTO.class)))
+                when(acceptanceCriteriaMapper.toEntity(any(AcceptanceCriteriaRequest.class)))
                                 .thenReturn(acceptanceCriteria);
                 when(userStoryRepository.findById(1L)).thenReturn(Optional.of(userStory));
                 when(acceptanceCriteriaRepository.save(any())).thenReturn(acceptanceCriteria);
                 when(acceptanceCriteriaMapper.toDto(any())).thenReturn(acceptanceCriteriaDTO);
 
                 // Act
-                AcceptanceCriteriaDTO result = acceptanceCriteriaService.create(creationDTO);
+                AcceptanceCriteriaResponse result = acceptanceCriteriaService.create(creationDTO);
 
                 // Assert
                 assertThat(result).isNotNull();
@@ -105,7 +105,7 @@ class AcceptanceCriteriaServiceImplTest {
         @Test
         void create_ShouldThrowResourceNotFoundException_WhenUserStoryNotFound() {
                 // Arrange
-                when(acceptanceCriteriaMapper.toEntity(any(AcceptanceCriteriaCreationDTO.class)))
+                when(acceptanceCriteriaMapper.toEntity(any(AcceptanceCriteriaRequest.class)))
                                 .thenReturn(acceptanceCriteria);
                 when(userStoryRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -122,7 +122,7 @@ class AcceptanceCriteriaServiceImplTest {
                 when(acceptanceCriteriaMapper.toDto(acceptanceCriteria)).thenReturn(acceptanceCriteriaDTO);
 
                 // Act
-                AcceptanceCriteriaDTO result = acceptanceCriteriaService.findById(1L);
+                AcceptanceCriteriaResponse result = acceptanceCriteriaService.findById(1L);
 
                 // Assert
                 assertThat(result).isNotNull();
@@ -185,7 +185,7 @@ class AcceptanceCriteriaServiceImplTest {
                                 .userStory(userStory)
                                 .build();
 
-                AcceptanceCriteriaDTO updatedDTO = AcceptanceCriteriaDTO.builder()
+                AcceptanceCriteriaResponse updatedDTO = AcceptanceCriteriaResponse.builder()
                                 .id(1L)
                                 .given("Updated given")
                                 .when("Updated when")
@@ -198,7 +198,7 @@ class AcceptanceCriteriaServiceImplTest {
                 when(acceptanceCriteriaMapper.toDto(updatedEntity)).thenReturn(updatedDTO);
 
                 // Act
-                AcceptanceCriteriaDTO result = acceptanceCriteriaService.update(1L, updateDTO);
+                AcceptanceCriteriaResponse result = acceptanceCriteriaService.update(1L, updateDTO);
 
                 // Assert
                 assertThat(result).isNotNull();

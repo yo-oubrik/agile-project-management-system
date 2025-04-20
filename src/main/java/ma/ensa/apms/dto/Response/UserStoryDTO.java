@@ -1,4 +1,4 @@
-package ma.ensa.apms.dto;
+package ma.ensa.apms.dto.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

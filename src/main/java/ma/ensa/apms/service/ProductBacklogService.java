@@ -4,7 +4,7 @@ import java.util.List;
 
 import ma.ensa.apms.dto.ProductBacklogRequest;
 import ma.ensa.apms.dto.ProductBacklogResponse;
-import ma.ensa.apms.dto.UserStoryDTO;
+import ma.ensa.apms.dto.Response.UserStoryDTO;
 
 public interface ProductBacklogService {
     ProductBacklogResponse create(ProductBacklogRequest productBacklogRequest);

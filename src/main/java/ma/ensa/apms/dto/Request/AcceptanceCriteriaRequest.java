@@ -1,4 +1,4 @@
-package ma.ensa.apms.dto;
+package ma.ensa.apms.dto.Request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class AcceptanceCriteriaCreationDTO {
+public class AcceptanceCriteriaRequest {
     @NotBlank(message = "Given condition is required")
     @Size(min = 5, max = 255, message = "Given condition must be between 5 and 255 characters")
     private String given;

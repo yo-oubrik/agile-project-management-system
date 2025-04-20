@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
-import ma.ensa.apms.dto.AcceptanceCriteriaCreationDTO;
-import ma.ensa.apms.dto.AcceptanceCriteriaDTO;
+import ma.ensa.apms.dto.AcceptanceCriteriaResponse;
+import ma.ensa.apms.dto.Request.AcceptanceCriteriaRequest;
 import ma.ensa.apms.exception.EmptyResourcesException;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.AcceptanceCriteriaMapper;
@@ -27,7 +27,7 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
 
     @Override
     @Transactional
-    public AcceptanceCriteriaDTO create(AcceptanceCriteriaCreationDTO dto) {
+    public AcceptanceCriteriaResponse create(AcceptanceCriteriaRequest dto) {
         AcceptanceCriteria entity = acceptanceCriteriaMapper.toEntity(dto);
 
         if (dto.getUserStoryId() != null) {
@@ -41,15 +41,15 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
     }
 
     @Override
-    public AcceptanceCriteriaDTO findById(Long id) {
+    public AcceptanceCriteriaResponse findById(Long id) {
         return acceptanceCriteriaRepository.findById(id)
                 .map(acceptanceCriteriaMapper::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Acceptance Criteria not found"));
     }
 
     @Override
-    public List<AcceptanceCriteriaDTO> findAll() {
-        List<AcceptanceCriteriaDTO> acceptanceCriteriaDTOs = acceptanceCriteriaRepository.findAll()
+    public List<AcceptanceCriteriaResponse> findAll() {
+        List<AcceptanceCriteriaResponse> acceptanceCriteriaDTOs = acceptanceCriteriaRepository.findAll()
                 .stream()
                 .map(acceptanceCriteriaMapper::toDto)
                 .toList();
@@ -63,7 +63,7 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
 
     @Override
     @Transactional
-    public AcceptanceCriteriaDTO update(Long id, AcceptanceCriteriaCreationDTO dto) {
+    public AcceptanceCriteriaResponse update(Long id, AcceptanceCriteriaRequest dto) {
         if (id == null) {
             throw new IllegalArgumentException("Acceptance Criteria ID is required");
         }
