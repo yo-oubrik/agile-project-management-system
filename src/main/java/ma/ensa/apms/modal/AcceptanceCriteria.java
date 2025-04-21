@@ -49,8 +49,4 @@ public class AcceptanceCriteria {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_story_id")
     private UserStory userStory;
-
-    public boolean isMet() {
-        return this.met;
-    }
 }

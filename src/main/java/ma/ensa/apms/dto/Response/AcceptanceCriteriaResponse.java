@@ -1,4 +1,5 @@
 package ma.ensa.apms.dto.Response;
+
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -15,4 +16,5 @@ public class AcceptanceCriteriaResponse {
     private String given;
     private String when;
     private String then;
+    private boolean met;
 }

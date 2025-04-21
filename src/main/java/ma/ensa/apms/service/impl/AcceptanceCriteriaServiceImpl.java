@@ -9,12 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import ma.ensa.apms.dto.Request.AcceptanceCriteriaRequest;
 import ma.ensa.apms.dto.Response.AcceptanceCriteriaResponse;
+import ma.ensa.apms.dto.Response.UserStoryResponse;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.AcceptanceCriteriaMapper;
+// import ma.ensa.apms.mapper.UserStoryMapper;
 import ma.ensa.apms.modal.AcceptanceCriteria;
 import ma.ensa.apms.modal.UserStory;
 import ma.ensa.apms.repository.AcceptanceCriteriaRepository;
-import ma.ensa.apms.repository.UserStoryRepository;
 import ma.ensa.apms.service.AcceptanceCriteriaService;
 
 @Service
@@ -23,19 +24,12 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
 
     private AcceptanceCriteriaRepository acceptanceCriteriaRepository;
     private AcceptanceCriteriaMapper acceptanceCriteriaMapper;
-    private UserStoryRepository userStoryRepository;
+    // private UserStoryMapper userStoryMapper;
 
     @Override
     @Transactional
     public AcceptanceCriteriaResponse create(AcceptanceCriteriaRequest dto) {
         AcceptanceCriteria entity = acceptanceCriteriaMapper.toEntity(dto);
-
-        if (dto.getUserStoryId() != null) {
-            UserStory userStory = userStoryRepository.findById(dto.getUserStoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
-            entity.setUserStory(userStory);
-        }
-
         entity = acceptanceCriteriaRepository.save(entity);
         return acceptanceCriteriaMapper.toDto(entity);
     }
@@ -47,14 +41,25 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
                 .orElseThrow(() -> new ResourceNotFoundException("Acceptance Criteria not found"));
     }
 
-    @Override
-    public List<AcceptanceCriteriaResponse> findAll() {
+    private List<AcceptanceCriteriaResponse> findAll() {
         List<AcceptanceCriteriaResponse> acceptanceCriteriaDTOs = acceptanceCriteriaRepository.findAll()
                 .stream()
                 .map(acceptanceCriteriaMapper::toDto)
                 .toList();
 
         return acceptanceCriteriaDTOs;
+    }
+
+    @Override
+    public List<AcceptanceCriteriaResponse> findAllByMet(Boolean met) {
+        if (met == null) {
+            return findAll();
+        }
+
+        return acceptanceCriteriaRepository.findByMet(met)
+                .stream()
+                .map(acceptanceCriteriaMapper::toDto)
+                .toList();
     }
 
     @Override
@@ -69,12 +74,6 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
 
         acceptanceCriteriaMapper.updateEntityFromDto(dto, existingEntity);
 
-        if (dto.getUserStoryId() != null) {
-            UserStory userStory = userStoryRepository.findById(dto.getUserStoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
-            existingEntity.setUserStory(userStory);
-        }
-
         existingEntity = acceptanceCriteriaRepository.save(existingEntity);
         return acceptanceCriteriaMapper.toDto(existingEntity);
     }
@@ -87,4 +86,30 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
         }
         acceptanceCriteriaRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional
+    public AcceptanceCriteriaResponse updateMet(UUID id, Boolean met) {
+        AcceptanceCriteria entity = acceptanceCriteriaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Acceptance Criteria not found"));
+        entity.setMet(met);
+        entity = acceptanceCriteriaRepository.save(entity);
+        return acceptanceCriteriaMapper.toDto(entity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserStoryResponse getUserStoryByAcceptanceCriteriaId(UUID acceptanceCriteriaId) {
+        AcceptanceCriteria acceptanceCriteria = acceptanceCriteriaRepository.findById(acceptanceCriteriaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Acceptance Criteria not found"));
+
+        UserStory userStory = acceptanceCriteria.getUserStory();
+        if (userStory == null) {
+            throw new ResourceNotFoundException("User Story not found for this Acceptance Criteria");
+        }
+
+        // return userStoryMapper.toDto(userStory);
+        return UserStoryResponse.builder().build();
+    }
+
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -24,108 +25,115 @@ import ma.ensa.apms.exception.ResourceNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+        private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ApiErrorResponse> handleBusinessException(
-            BusinessException ex,
-            WebRequest request) {
-        ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
-                ex.getMessage(), request);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
+        @ExceptionHandler(BusinessException.class)
+        public ResponseEntity<ApiErrorResponse> handleBusinessException(
+                        BusinessException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException ex,
-            WebRequest request) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors()
-                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(
+                        MethodArgumentNotValidException ex,
+                        WebRequest request) {
+                Map<String, String> errors = new HashMap<>();
+                ex.getBindingResult().getFieldErrors()
+                                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
 
-        ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
-                "Validation failed", request);
-        errorResponse.setValidationErrors(errors);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.BAD_REQUEST,
+                                "Validation failed", request);
+                errorResponse.setValidationErrors(errors);
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleResourceNotFound(
-            ResourceNotFoundException ex,
-            WebRequest request) {
+        @ExceptionHandler(ResourceNotFoundException.class)
+        public ResponseEntity<ApiErrorResponse> handleResourceNotFound(
+                        ResourceNotFoundException ex,
+                        WebRequest request) {
 
-        ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.NOT_FOUND,
-                ex.getMessage(), request);
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.NOT_FOUND,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
 
-    @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ApiErrorResponse> handleDuplicateResource(
-            DuplicateResourceException ex,
-            WebRequest request) {
-        ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.CONFLICT,
-                ex.getMessage(), request);
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
-    }
+        @ExceptionHandler(DuplicateResourceException.class)
+        public ResponseEntity<ApiErrorResponse> handleDuplicateResource(
+                        DuplicateResourceException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.CONFLICT,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        }
 
-    // @ExceptionHandler(BadCredentialsException.class)
-    // public ResponseEntity<ApiErrorResponse>
-    // handleBadCredentialsException(BadCredentialsException ex,
-    // WebRequest request) {
-    // ApiErrorResponse errorResponse =
-    // buildApiErrorResponse(HttpStatus.UNAUTHORIZED,
-    // "Incorrect username or password", request);
-    // return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
-    // }
+        // @ExceptionHandler(BadCredentialsException.class)
+        // public ResponseEntity<ApiErrorResponse>
+        // handleBadCredentialsException(BadCredentialsException ex,
+        // WebRequest request) {
+        // ApiErrorResponse errorResponse =
+        // buildApiErrorResponse(HttpStatus.UNAUTHORIZED,
+        // "Incorrect username or password", request);
+        // return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+        // }
 
-    @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleNoResourceFoundException(NoResourceFoundException ex,
-            WebRequest request) {
-        ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.NOT_FOUND,
-                "Resource not found", request);
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
+        @ExceptionHandler(NoResourceFoundException.class)
+        public ResponseEntity<ApiErrorResponse> handleNoResourceFoundException(NoResourceFoundException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.NOT_FOUND,
+                                "Resource not found", request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
 
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ApiErrorResponse> handleHttpRequestMethodNotSupported(
-            HttpRequestMethodNotSupportedException ex,
-            WebRequest request) {
-        ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.METHOD_NOT_ALLOWED,
-                "Method not allowed", request);
-        return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
-    }
+        @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+        public ResponseEntity<ApiErrorResponse> handleHttpRequestMethodNotSupported(
+                        HttpRequestMethodNotSupportedException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.METHOD_NOT_ALLOWED,
+                                "Method not allowed", request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
+        }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleEntityNotFoundException(
-            EntityNotFoundException ex,
-            WebRequest request) {
-        ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.NOT_FOUND,
-                ex.getMessage(), request);
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
+        @ExceptionHandler(EntityNotFoundException.class)
+        public ResponseEntity<ApiErrorResponse> handleEntityNotFoundException(
+                        EntityNotFoundException ex,
+                        WebRequest request) {
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.NOT_FOUND,
+                                ex.getMessage(), request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> handleGlobalException(
-            Exception ex,
-            WebRequest request) {
-        logger.error("Unhandled exception", ex);
-        ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
-                "An unexpected error occurred", request);
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+        public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+                return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body("Invalid value for parameter: " + ex.getName());
+        }
 
-    private ApiErrorResponse buildApiErrorResponse(HttpStatus status, String message, WebRequest request) {
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ApiErrorResponse> handleGlobalException(
+                        Exception ex,
+                        WebRequest request) {
+                logger.error("Unhandled exception", ex);
+                ApiErrorResponse errorResponse = buildApiErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                                "An unexpected error occurred", request);
+                return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        /*
-         * the substring(4) is used to remove the "uri=" prefix from the request
-         * description
-         */
-        return ApiErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(status.value())
-                .error(status.getReasonPhrase())
-                .message(message)
-                .path(request.getDescription(false).substring(4))
-                .build();
-    }
+        private ApiErrorResponse buildApiErrorResponse(HttpStatus status, String message, WebRequest request) {
+
+                /*
+                 * the substring(4) is used to remove the "uri=" prefix from the request
+                 * description
+                 */
+                return ApiErrorResponse.builder()
+                                .timestamp(LocalDateTime.now())
+                                .status(status.value())
+                                .error(status.getReasonPhrase())
+                                .message(message)
+                                .path(request.getDescription(false).substring(4))
+                                .build();
+        }
 }

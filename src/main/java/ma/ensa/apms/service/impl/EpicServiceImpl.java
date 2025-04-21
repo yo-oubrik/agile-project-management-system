@@ -15,7 +15,7 @@ import ma.ensa.apms.dto.Response.UserStoryResponse;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.EpicMapper;
 import ma.ensa.apms.mapper.ProductBacklogMapper;
-import ma.ensa.apms.mapper.UserStoryMapper;
+// import ma.ensa.apms.mapper.UserStoryMapper;
 import ma.ensa.apms.modal.Epic;
 import ma.ensa.apms.modal.UserStory;
 import ma.ensa.apms.repository.EpicRepository;
@@ -29,7 +29,7 @@ public class EpicServiceImpl implements EpicService {
     private final EpicRepository epicRepository;
     private final UserStoryRepository userStoryRepository;
     private final EpicMapper epicMapper;
-    private final UserStoryMapper userStoryMapper;
+    // private final UserStoryMapper userStoryMapper;
     private final ProductBacklogMapper productBacklogMapper;
 
     private int getUserStoriesCount(Epic epic) {
@@ -97,10 +97,11 @@ public class EpicServiceImpl implements EpicService {
 
     @Override
     public List<UserStoryResponse> getUserStoriesByEpicId(UUID epicId) {
-        Epic epic = getEpicById(epicId);
-        return epic.getUserStories().stream()
-                .map(userStoryMapper::toDto)
-                .collect(Collectors.toList());
+        // Epic epic = getEpicById(epicId);
+        // return epic.getUserStories().stream()
+        // .map(userStoryMapper::toDto)
+        // .collect(Collectors.toList());
+        return List.of();
     }
 
     @Override

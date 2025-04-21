@@ -9,13 +9,13 @@ import ma.ensa.apms.dto.Request.ProjectRequest;
 import ma.ensa.apms.dto.Response.ProjectResponse;
 import ma.ensa.apms.modal.Project;
 
-@Mapper(componentModel = "spring" , unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProjectMapper {
-    @Mapping(target = "id" , ignore = true)
+    @Mapping(target = "id", ignore = true)
     Project toEntity(ProjectRequest request);
 
-    ProjectResponse toResponse(Project entity); 
-    
+    ProjectResponse toResponse(Project entity);
+
     @Mapping(target = "id", ignore = true)
     void updateEntityFromRequest(ProjectRequest request, @MappingTarget Project entity);
 }
