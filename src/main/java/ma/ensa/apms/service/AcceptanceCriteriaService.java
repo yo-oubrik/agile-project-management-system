@@ -21,4 +21,6 @@ public interface AcceptanceCriteriaService {
     void delete(UUID id);
 
     UserStoryResponse getUserStoryByAcceptanceCriteriaId(UUID acceptanceCriteriaId);
+
+    List<AcceptanceCriteriaResponse> findAll();
 }

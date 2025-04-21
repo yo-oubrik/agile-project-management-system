@@ -75,4 +75,8 @@ public class UserStory implements Serializable {
     @OneToMany(mappedBy = "userStory", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<AcceptanceCriteria> acceptanceCriterias = new ArrayList<>();
+
+    @OneToMany(mappedBy = "userStory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Task> tasks = new ArrayList<>();
 }
