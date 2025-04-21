@@ -9,17 +9,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
 import ma.ensa.apms.dto.Request.UserStoryRequest;
+import ma.ensa.apms.dto.Response.AcceptanceCriteriaResponse;
 import ma.ensa.apms.dto.Response.UserStoryResponse;
 import ma.ensa.apms.exception.BusinessException;
 import ma.ensa.apms.exception.ResourceNotFoundException;
+import ma.ensa.apms.mapper.AcceptanceCriteriaMapper;
 import ma.ensa.apms.mapper.UserStoryMapper;
 import ma.ensa.apms.modal.AcceptanceCriteria;
 import ma.ensa.apms.modal.Epic;
-import ma.ensa.apms.modal.ProductBacklog;
+import ma.ensa.apms.modal.SprintBacklog;
 import ma.ensa.apms.modal.UserStory;
 import ma.ensa.apms.modal.enums.UserStoryStatus;
 import ma.ensa.apms.repository.EpicRepository;
 import ma.ensa.apms.repository.ProductBacklogRepository;
+import ma.ensa.apms.repository.SprintBacklogRepository;
 import ma.ensa.apms.repository.UserStoryRepository;
 import ma.ensa.apms.service.UserStoryService;
 
@@ -31,7 +34,9 @@ public class UserStoryServiceImpl implements UserStoryService {
     private UserStoryRepository userStoryRepository;
     private UserStoryMapper userStoryMapper;
     private ProductBacklogRepository productBacklogRepository;
+    private SprintBacklogRepository sprintBacklogRepository;
     private EpicRepository epicRepository;
+    private AcceptanceCriteriaMapper acceptanceCriteriaMapper;
 
     /**
      * Create a new user story
@@ -44,12 +49,6 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Transactional
     public UserStoryResponse create(UserStoryRequest dto) {
         UserStory us = userStoryMapper.toEntity(dto);
-
-        if (dto.getProductBacklogId() != null) {
-            ProductBacklog productBacklog = productBacklogRepository.findById(dto.getProductBacklogId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Product backlog not found"));
-            us.setProductBacklog(productBacklog);
-        }
         us.setStatus(UserStoryStatus.TODO);
         userStoryRepository.save(us);
         return userStoryMapper.toResponse(us);
@@ -66,21 +65,10 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override
     @Transactional
     public UserStoryResponse updateUserStory(UUID id, UserStoryRequest dto) {
-        if (id == null) {
-            // log.error("User story ID is null");
-            throw new IllegalArgumentException("User story ID is required");
-        }
-
         UserStory us = userStoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
 
         userStoryMapper.updateEntityFromDto(dto, us);
-
-        if (dto.getProductBacklogId() != null) {
-            ProductBacklog productBacklog = productBacklogRepository.findById(dto.getProductBacklogId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Product backlog not found"));
-            us.setProductBacklog(productBacklog);
-        }
         userStoryRepository.save(us);
         return userStoryMapper.toResponse(us);
     }
@@ -158,16 +146,33 @@ public class UserStoryServiceImpl implements UserStoryService {
      * @return the moved user story
      * @throws ResourceNotFoundException if the user story or sprint is not found
      */
-    // @Override
-    // @Transactional
-    // public UserStoryResponse moveToSprint(UUID usId, UUID sprintId) {
-    // UserStory us = userStoryRepository.findById(usId)
-    // .orElseThrow(() -> new RuntimeException("US introuvable"));
-    // Sprint sprint = sprintRepository.findById(sprintId)
-    // .orElseThrow(() -> new RuntimeException("Sprint introuvable"));
-    // us.setSprint(sprint);
-    // return userStoryMapper.toDTO(userStoryRepository.save(us));
-    // }
+    @Override
+    @Transactional
+    public UserStoryResponse moveToSprint(UUID usId, UUID sprintId) {
+        UserStory us = userStoryRepository.findById(usId)
+            .orElseThrow(() -> new ResourceNotFoundException("User Story not found"));
+        SprintBacklog sprint = sprintBacklogRepository.findById(sprintId)
+            .orElseThrow(() -> new ResourceNotFoundException("Sprint Backlog not found"));
+        us.setSprintBacklog(sprint);
+        us.setProductBacklog(null);
+        return userStoryMapper.toResponse(userStoryRepository.save(us));
+    }
+
+    /**
+     * Get all acceptance criteria by user story id
+     * 
+     * @param id the id of the user story
+     * @return the list of acceptance criteria for the given user story
+     * @throws ResourceNotFoundException if the user story is not found
+     */
+    @Override
+    public List<AcceptanceCriteriaResponse> getAcceptanceCriteriasByUserStoryId(UUID id) {
+        UserStory us = userStoryRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("User Story not found"));
+        return us.getAcceptanceCriterias().stream()
+            .map(acceptanceCriteriaMapper::toDto)
+            .collect(Collectors.toList());
+    }
 
     /**
      * Get all user stories by status

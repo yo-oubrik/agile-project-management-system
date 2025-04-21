@@ -58,7 +58,6 @@ public class UserStory implements Serializable {
     @NotNull(message = "Status is required")
     private UserStoryStatus status;
 
-    @NotNull(message = "Product Backlog is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_backlog_id")
     private ProductBacklog productBacklog;
@@ -67,7 +66,6 @@ public class UserStory implements Serializable {
     @JoinColumn(name = "epic_id")
     private Epic epic;
 
-    @NotNull(message = "Sprint Backlog is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sprint_backlog_id")
     private SprintBacklog sprintBacklog;
