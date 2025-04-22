@@ -15,7 +15,8 @@ import lombok.NoArgsConstructor;
 public class ProductBacklogResponse {
     private UUID id;
     private String name;
-    private  LocalDateTime createdAt;
+    private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    
+    private long userStoryCount;
+    private long epicCount;
 }

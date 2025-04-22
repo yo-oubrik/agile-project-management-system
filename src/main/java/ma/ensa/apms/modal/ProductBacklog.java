@@ -32,9 +32,13 @@ public class ProductBacklog extends BaseEntity {
     @EqualsAndHashCode.Exclude
     private Project project;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "productBacklog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserStory> userStories;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "productBacklog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Epic> epics;
 }
