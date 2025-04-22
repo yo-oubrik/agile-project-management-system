@@ -1,10 +1,10 @@
 package ma.ensa.apms.dto;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import lombok.Data;
 import ma.ensa.apms.modal.enums.TaskStatus;
-
-import java.time.LocalDate;
-import java.util.UUID;
 
 @Data
 public class TaskResponseDto {
@@ -12,6 +12,6 @@ public class TaskResponseDto {
     private String title;
     private String description;
     private TaskStatus status;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 }

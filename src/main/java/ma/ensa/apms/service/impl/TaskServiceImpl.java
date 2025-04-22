@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import ma.ensa.apms.annotation.LogOperation;
 import ma.ensa.apms.dto.TaskEndDateUpdateDto;
 import ma.ensa.apms.dto.TaskRequestDto;
 import ma.ensa.apms.dto.TaskResponseDto;
@@ -31,7 +30,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    @LogOperation
     public TaskResponseDto createTask(TaskRequestDto taskDto) {
         Task task = taskMapper.toEntity(taskDto);
         Task savedTask = taskRepository.save(task);
