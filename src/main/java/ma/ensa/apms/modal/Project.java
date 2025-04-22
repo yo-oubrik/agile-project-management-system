@@ -9,12 +9,12 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import ma.ensa.apms.modal.enums.ProjectStatus;
-import ma.ensa.apms.validation.ValidProjectDates;
+import ma.ensa.apms.validation.DateRangeHolder;
+import ma.ensa.apms.validation.StartEndDateValidator;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 
 @Data
 @ToString(callSuper = false)
@@ -23,13 +23,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Builder
-@ValidProjectDates
-public class Project extends BaseEntity implements Serializable {
+@StartEndDateValidator
+public class Project extends BaseEntity implements Serializable, DateRangeHolder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    
+
     @NotBlank(message = "Name is required")
     private String name;
 

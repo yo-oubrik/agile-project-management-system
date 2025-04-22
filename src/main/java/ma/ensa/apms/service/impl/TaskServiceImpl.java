@@ -1,7 +1,20 @@
 package ma.ensa.apms.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
-import ma.ensa.apms.dto.*;
+import ma.ensa.apms.annotation.LogOperation;
+import ma.ensa.apms.dto.TaskEndDateUpdateDto;
+import ma.ensa.apms.dto.TaskRequestDto;
+import ma.ensa.apms.dto.TaskResponseDto;
+import ma.ensa.apms.dto.TaskStartDateUpdateDto;
+import ma.ensa.apms.dto.TaskStatusUpdateDto;
 import ma.ensa.apms.exception.BusinessException;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.TaskMapper;
@@ -9,13 +22,6 @@ import ma.ensa.apms.modal.Task;
 import ma.ensa.apms.modal.enums.TaskStatus;
 import ma.ensa.apms.repository.TaskRepository;
 import ma.ensa.apms.service.TaskService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +31,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    @LogOperation
     public TaskResponseDto createTask(TaskRequestDto taskDto) {
         Task task = taskMapper.toEntity(taskDto);
         Task savedTask = taskRepository.save(task);
@@ -55,8 +62,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskResponseDto> getTasksByDateRange(LocalDate startDate, LocalDate endDate) {
-        return taskRepository.findByStartDateBetweenOrEndDateBetween(startDate, endDate)
+    public List<TaskResponseDto> getTasksByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return taskRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate, endDate)
                 .stream()
                 .map(taskMapper::toDto)
                 .collect(Collectors.toList());
@@ -91,7 +98,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
-        LocalDate newStartDate = startDateDto.getStartDate();
+        LocalDateTime newStartDate = startDateDto.getStartDate();
 
         // Validate that new start date is not after existing end date
         if (task.getEndDate() != null && newStartDate.isAfter(task.getEndDate())) {
@@ -109,7 +116,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
-        LocalDate newEndDate = endDateDto.getEndDate();
+        LocalDateTime newEndDate = endDateDto.getEndDate();
 
         if (task.getStartDate() != null && newEndDate.isBefore(task.getStartDate())) {
             throw new BusinessException("End date cannot be before the start date");

@@ -1,23 +1,24 @@
 package ma.ensa.apms.service.impl;
 
-import ma.ensa.apms.dto.Request.ProjectRequest;
-import ma.ensa.apms.dto.Response.ProjectResponse;
-import ma.ensa.apms.exception.BusinessException;
-import ma.ensa.apms.modal.Project;
-import ma.ensa.apms.modal.enums.ProjectStatus;
-import ma.ensa.apms.repository.ProjectRepository;
-import ma.ensa.apms.service.ProjectService;
-import ma.ensa.apms.mapper.ProjectMapper;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import ma.ensa.apms.annotation.LogOperation;
+import ma.ensa.apms.dto.Request.ProjectRequest;
+import ma.ensa.apms.dto.Response.ProjectResponse;
+import ma.ensa.apms.exception.BusinessException;
+import ma.ensa.apms.mapper.ProjectMapper;
+import ma.ensa.apms.modal.Project;
+import ma.ensa.apms.modal.enums.ProjectStatus;
+import ma.ensa.apms.repository.ProjectRepository;
+import ma.ensa.apms.service.ProjectService;
 
 @Service
 @AllArgsConstructor
@@ -26,6 +27,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectMapper projectMapper;
 
     @Override
+    @LogOperation(description = "Creating new project")
     public ProjectResponse createProject(ProjectRequest request) {
         Project project = projectMapper.toEntity(request);
         project = projectRepository.save(project);
@@ -33,6 +35,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @LogOperation(description = "Updating project")
     public ProjectResponse updateProject(UUID id, ProjectRequest request) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
@@ -51,7 +54,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
         project.setStartDate(startDate);
-        if(project.getEndDate() != null && project.getEndDate().isBefore(startDate)) {
+        if (project.getEndDate() != null && project.getEndDate().isBefore(startDate)) {
             throw new BusinessException("Start date must be before end date");
         }
         project = projectRepository.save(project);
@@ -63,7 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
         project.setEndDate(endDate);
-        if(project.getStartDate() != null && project.getStartDate().isAfter(endDate)) {
+        if (project.getStartDate() != null && project.getStartDate().isAfter(endDate)) {
             throw new BusinessException("End date must be after start date");
         }
         project = projectRepository.save(project);
@@ -80,6 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @LogOperation(description = "Getting project by ID")
     public ProjectResponse getProject(UUID id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));

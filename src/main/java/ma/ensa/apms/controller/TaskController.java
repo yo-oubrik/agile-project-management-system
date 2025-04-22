@@ -1,6 +1,6 @@
 package ma.ensa.apms.controller;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,8 +54,8 @@ public class TaskController {
 
     @GetMapping("/range")
     public ResponseEntity<List<TaskResponseDto>> getTasksByDateRange(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime endDate) {
         return ResponseEntity.ok(taskService.getTasksByDateRange(startDate, endDate));
     }
 
