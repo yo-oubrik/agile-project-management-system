@@ -39,7 +39,7 @@ public class UserStory implements Serializable {
     private UUID id;
 
     @NotBlank(message = "Title cannot be blank")
-    @Size(min = 10, max = 100, message = "Title must be between 10 and 100 characters")
+    @Size(min = 10, max = 100, message = "Name must be between 10 and 100 characters")
     private String name;
 
     @NotBlank(message = "Role cannot be blank")
