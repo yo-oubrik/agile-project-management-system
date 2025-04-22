@@ -22,8 +22,9 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import ma.ensa.apms.modal.enums.UserStoryPriority;
+import lombok.ToString;
 import ma.ensa.apms.modal.enums.UserStoryStatus;
 
 @Entity
@@ -50,15 +51,13 @@ public class UserStory implements Serializable {
     @NotBlank(message = "Benefit cannot be blank")
     private String benefit;
 
-    @Enumerated(EnumType.STRING)
     @NotNull(message = "Priority is required")
-    private UserStoryPriority priority;
+    private int priority;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Status is required")
     private UserStoryStatus status;
 
-    @NotNull(message = "Product Backlog is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_backlog_id")
     private ProductBacklog productBacklog;
@@ -67,13 +66,14 @@ public class UserStory implements Serializable {
     @JoinColumn(name = "epic_id")
     private Epic epic;
 
-    @NotNull(message = "Sprint Backlog is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sprint_backlog_id")
     private SprintBacklog sprintBacklog;
 
     @OneToMany(mappedBy = "userStory", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<AcceptanceCriteria> acceptanceCriterias = new ArrayList<>();
 
     @OneToMany(mappedBy = "userStory", cascade = CascadeType.ALL, orphanRemoval = true)

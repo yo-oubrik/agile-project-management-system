@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ma.ensa.apms.modal.enums.UserStoryStatus;
 
 @Data
 @Builder
@@ -13,10 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserStoryResponse {
     private UUID id;
-    private String title;
-    private String description;
+    private String name;
+    private String role;
+    private String feature;
+    private String benefit;
     private int priority;
-    private int status;
-    private Integer storyPoints;
-    private String acceptanceCriteria;
+    private UserStoryStatus status;
 }

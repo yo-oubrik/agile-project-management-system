@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ma.ensa.apms.dto.Request.UserStoryRequest;
+import ma.ensa.apms.dto.Response.AcceptanceCriteriaResponse;
 import ma.ensa.apms.dto.Response.UserStoryResponse;
 import ma.ensa.apms.modal.enums.UserStoryStatus;
 
@@ -17,6 +18,10 @@ public interface UserStoryService {
     UserStoryResponse changeStatus(UUID id, UserStoryStatus newStatus);
 
     UserStoryResponse linkToEpic(UUID storyId, UUID epicId);
+
+    UserStoryResponse moveToSprint(UUID storyId, UUID sprintId);
+
+    List<AcceptanceCriteriaResponse> getAcceptanceCriteriasByUserStoryId(UUID id);
 
     List<UserStoryResponse> getUserStoriesByStatusAndProductBacklogId(UserStoryStatus statut, UUID productBacklogId);
 
