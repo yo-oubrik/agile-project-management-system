@@ -29,7 +29,7 @@ import ma.ensa.apms.modal.enums.TaskStatus;
 import ma.ensa.apms.service.TaskService;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/tasks")
 @RequiredArgsConstructor
 public class TaskController {
 
