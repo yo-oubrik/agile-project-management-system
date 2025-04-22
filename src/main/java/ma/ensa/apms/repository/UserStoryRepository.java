@@ -9,15 +9,17 @@ import java.util.UUID;
 
 import ma.ensa.apms.modal.enums.UserStoryStatus;
 
-
-
 @Repository
 public interface UserStoryRepository extends JpaRepository<UserStory, UUID> {
     boolean existsByNameAndProductBacklogId(String name, UUID productBacklogId);
+
     List<UserStory> findByProductBacklogIdOrderByPriorityAsc(UUID productBacklogId);
 
-    List<UserStory> findByStatusAndProductBacklogId(UserStoryStatus status , UUID productBacklogId);
+    List<UserStory> findByStatusAndProductBacklogId(UserStoryStatus status, UUID productBacklogId);
+
     List<UserStory> findByEpicId(UUID epicId);
 
     List<UserStory> findBySprintBacklogId(UUID sprintBacklogId);
+
+    List<UserStory> findByProductBacklogId(UUID productBacklogId);
 }

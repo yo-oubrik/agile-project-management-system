@@ -41,22 +41,17 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
                 .orElseThrow(() -> new ResourceNotFoundException("Acceptance Criteria not found"));
     }
 
-    private List<AcceptanceCriteriaResponse> findAll() {
-        List<AcceptanceCriteriaResponse> acceptanceCriteriaDTOs = acceptanceCriteriaRepository.findAll()
+    @Override
+    public List<AcceptanceCriteriaResponse> findAllByMet(Boolean met) {
+        return acceptanceCriteriaRepository.findByMet(met)
                 .stream()
                 .map(acceptanceCriteriaMapper::toDto)
                 .toList();
-
-        return acceptanceCriteriaDTOs;
     }
 
     @Override
-    public List<AcceptanceCriteriaResponse> findAllByMet(Boolean met) {
-        if (met == null) {
-            return findAll();
-        }
-
-        return acceptanceCriteriaRepository.findByMet(met)
+    public List<AcceptanceCriteriaResponse> findAll() {
+        return acceptanceCriteriaRepository.findAll()
                 .stream()
                 .map(acceptanceCriteriaMapper::toDto)
                 .toList();

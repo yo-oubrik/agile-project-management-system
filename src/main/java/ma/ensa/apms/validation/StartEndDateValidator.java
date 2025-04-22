@@ -8,12 +8,13 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ProjectDatesValidator.class)
-public @interface ValidProjectDates {
-    String message() default "Invalid project end date , end date must be after start date";
+@Constraint(validatedBy = StartEndDateConstraintValidator.class)
+public @interface StartEndDateValidator {
+    String message() default "Start date must be before end date";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

@@ -41,7 +41,7 @@ public class AcceptanceCriteriaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AcceptanceCriteriaResponse>> findAll(@RequestParam(required = false) Boolean met) {
+    public ResponseEntity<List<AcceptanceCriteriaResponse>> finyAllByMet(@RequestParam Boolean met) {
         return ResponseEntity.ok(acceptanceCriteriaService.findAllByMet(met));
     }
 

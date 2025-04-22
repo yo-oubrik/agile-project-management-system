@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
+import ma.ensa.apms.annotation.LogOperation;
 import ma.ensa.apms.dto.Request.UserStoryRequest;
 import ma.ensa.apms.dto.Response.AcceptanceCriteriaResponse;
 import ma.ensa.apms.dto.Response.UserStoryResponse;
@@ -28,7 +29,6 @@ import ma.ensa.apms.service.UserStoryService;
 
 @Service
 @AllArgsConstructor
-// @Slf4j
 public class UserStoryServiceImpl implements UserStoryService {
 
     private UserStoryRepository userStoryRepository;
@@ -47,6 +47,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      */
     @Override
     @Transactional
+    @LogOperation(description = "Creating new user story")
     public UserStoryResponse create(UserStoryRequest dto) {
         UserStory us = userStoryMapper.toEntity(dto);
         us.setStatus(UserStoryStatus.TODO);
@@ -81,6 +82,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      * @throws ResourceNotFoundException if the user story is not found
      */
     @Override
+    @LogOperation(description = "Retrieving user story by ID")
     public UserStoryResponse getUserStoryById(UUID id) {
         UserStory us = userStoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
@@ -101,7 +103,6 @@ public class UserStoryServiceImpl implements UserStoryService {
         UserStory story = userStoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User story not found"));
 
-        // verifier les criteres d'acceptance
         if (newStatus == UserStoryStatus.DONE) {
             boolean allMet = story.getAcceptanceCriterias().stream()
                     .allMatch(AcceptanceCriteria::isMet);
@@ -150,9 +151,9 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Transactional
     public UserStoryResponse moveToSprint(UUID usId, UUID sprintId) {
         UserStory us = userStoryRepository.findById(usId)
-            .orElseThrow(() -> new ResourceNotFoundException("User Story not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User Story not found"));
         SprintBacklog sprint = sprintBacklogRepository.findById(sprintId)
-            .orElseThrow(() -> new ResourceNotFoundException("Sprint Backlog not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Sprint Backlog not found"));
         us.setSprintBacklog(sprint);
         us.setProductBacklog(null);
         return userStoryMapper.toResponse(userStoryRepository.save(us));
@@ -168,10 +169,10 @@ public class UserStoryServiceImpl implements UserStoryService {
     @Override
     public List<AcceptanceCriteriaResponse> getAcceptanceCriteriasByUserStoryId(UUID id) {
         UserStory us = userStoryRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("User Story not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User Story not found"));
         return us.getAcceptanceCriterias().stream()
-            .map(acceptanceCriteriaMapper::toDto)
-            .collect(Collectors.toList());
+                .map(acceptanceCriteriaMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -181,7 +182,8 @@ public class UserStoryServiceImpl implements UserStoryService {
      * @return the list of user stories with the given status
      */
     @Override
-    public List<UserStoryResponse> getUserStoriesByStatusAndProductBacklogId(UserStoryStatus statut , UUID productBacklogId) {
+    public List<UserStoryResponse> getUserStoriesByStatusAndProductBacklogId(UserStoryStatus statut,
+            UUID productBacklogId) {
         if (statut == null) {
             throw new IllegalArgumentException("Status is required");
         }
@@ -226,8 +228,6 @@ public class UserStoryServiceImpl implements UserStoryService {
         if (sprintId == null) {
             throw new IllegalArgumentException("Sprint ID is required");
         }
-        // sprintRepository.findById(sprintId)
-        // .orElseThrow(() -> new ResourceNotFoundException("Sprint not found"));
         return userStoryRepository.findBySprintBacklogId(sprintId)
                 .stream()
                 .map(userStoryMapper::toResponse)
@@ -243,6 +243,7 @@ public class UserStoryServiceImpl implements UserStoryService {
      */
     @Override
     @Transactional
+    @LogOperation(description = "Deleting user story")
     public void delete(UUID id) {
         UserStory story = userStoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User Story not found"));

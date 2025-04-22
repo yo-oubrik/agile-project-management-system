@@ -9,13 +9,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.ensa.apms.modal.enums.ProjectStatus;
-import ma.ensa.apms.validation.ValidProjectDates;
+import ma.ensa.apms.validation.StartEndDateValidator;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ValidProjectDates
+@StartEndDateValidator
 public class ProjectRequest {
     @NotBlank(message = "Name is required")
     private String name;
