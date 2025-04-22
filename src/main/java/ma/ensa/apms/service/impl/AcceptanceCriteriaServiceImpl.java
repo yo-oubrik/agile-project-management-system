@@ -12,7 +12,6 @@ import ma.ensa.apms.dto.Response.AcceptanceCriteriaResponse;
 import ma.ensa.apms.dto.Response.UserStoryResponse;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.AcceptanceCriteriaMapper;
-// import ma.ensa.apms.mapper.UserStoryMapper;
 import ma.ensa.apms.modal.AcceptanceCriteria;
 import ma.ensa.apms.modal.UserStory;
 import ma.ensa.apms.repository.AcceptanceCriteriaRepository;
@@ -24,7 +23,6 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
 
     private AcceptanceCriteriaRepository acceptanceCriteriaRepository;
     private AcceptanceCriteriaMapper acceptanceCriteriaMapper;
-    // private UserStoryMapper userStoryMapper;
 
     @Override
     @Transactional
@@ -60,10 +58,6 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
     @Override
     @Transactional
     public AcceptanceCriteriaResponse update(UUID id, AcceptanceCriteriaRequest dto) {
-        if (id == null) {
-            throw new IllegalArgumentException("Acceptance Criteria ID is required");
-        }
-
         AcceptanceCriteria existingEntity = acceptanceCriteriaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Acceptance Criteria not found"));
 
@@ -103,7 +97,6 @@ public class AcceptanceCriteriaServiceImpl implements AcceptanceCriteriaService 
             throw new ResourceNotFoundException("User Story not found for this Acceptance Criteria");
         }
 
-        // return userStoryMapper.toDto(userStory);
         return UserStoryResponse.builder().build();
     }
 

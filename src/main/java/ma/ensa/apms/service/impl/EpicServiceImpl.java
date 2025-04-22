@@ -15,7 +15,7 @@ import ma.ensa.apms.dto.Response.UserStoryResponse;
 import ma.ensa.apms.exception.ResourceNotFoundException;
 import ma.ensa.apms.mapper.EpicMapper;
 import ma.ensa.apms.mapper.ProductBacklogMapper;
-// import ma.ensa.apms.mapper.UserStoryMapper;
+import ma.ensa.apms.mapper.UserStoryMapper;
 import ma.ensa.apms.modal.Epic;
 import ma.ensa.apms.modal.UserStory;
 import ma.ensa.apms.repository.EpicRepository;
@@ -29,7 +29,7 @@ public class EpicServiceImpl implements EpicService {
     private final EpicRepository epicRepository;
     private final UserStoryRepository userStoryRepository;
     private final EpicMapper epicMapper;
-    // private final UserStoryMapper userStoryMapper;
+    private final UserStoryMapper userStoryMapper;
     private final ProductBacklogMapper productBacklogMapper;
 
     private int getUserStoriesCount(Epic epic) {
@@ -97,11 +97,10 @@ public class EpicServiceImpl implements EpicService {
 
     @Override
     public List<UserStoryResponse> getUserStoriesByEpicId(UUID epicId) {
-        // Epic epic = getEpicById(epicId);
-        // return epic.getUserStories().stream()
-        // .map(userStoryMapper::toDto)
-        // .collect(Collectors.toList());
-        return List.of();
+        Epic epic = getEpicById(epicId);
+        return epic.getUserStories().stream()
+                .map(userStoryMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -110,7 +109,7 @@ public class EpicServiceImpl implements EpicService {
         if (epic.getProductBacklog() == null) {
             throw new ResourceNotFoundException("No product backlog is associated with epic id: " + epicId);
         }
-        return productBacklogMapper.toDto(epic.getProductBacklog());
+        return productBacklogMapper.toResponse(epic.getProductBacklog());
     }
 
     @Override

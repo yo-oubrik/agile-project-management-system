@@ -9,31 +9,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import ma.ensa.apms.annotation.LogOperation;
 import ma.ensa.apms.dto.Request.ProjectRequest;
 import ma.ensa.apms.dto.Response.ProjectResponse;
 import ma.ensa.apms.exception.BusinessException;
-import ma.ensa.apms.mapper.ProjectMapper;
 import ma.ensa.apms.exception.ResourceNotFoundException;
+import ma.ensa.apms.mapper.ProjectMapper;
 import ma.ensa.apms.modal.ProductBacklog;
 import ma.ensa.apms.modal.Project;
 import ma.ensa.apms.modal.enums.ProjectStatus;
 import ma.ensa.apms.repository.ProductBacklogRepository;
 import ma.ensa.apms.repository.ProjectRepository;
 import ma.ensa.apms.service.ProjectService;
-import ma.ensa.apms.mapper.ProjectMapper;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -71,7 +60,6 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
         project.setStartDate(startDate);
         if (project.getEndDate() != null && project.getEndDate().isBefore(startDate)) {
-        if (project.getEndDate() != null && project.getEndDate().isBefore(startDate)) {
             throw new BusinessException("Start date must be before end date");
         }
         project = projectRepository.save(project);
@@ -83,7 +71,6 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
         project.setEndDate(endDate);
-        if (project.getStartDate() != null && project.getStartDate().isAfter(endDate)) {
         if (project.getStartDate() != null && project.getStartDate().isAfter(endDate)) {
             throw new BusinessException("End date must be after start date");
         }
