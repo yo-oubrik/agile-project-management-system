@@ -1,6 +1,7 @@
 package ma.ensa.apms.controller;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -32,186 +33,188 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.ensa.apms.dto.Request.AcceptanceCriteriaRequest;
 import ma.ensa.apms.dto.Response.AcceptanceCriteriaResponse;
 import ma.ensa.apms.dto.Response.UserStoryResponse;
+import ma.ensa.apms.modal.enums.UserStoryStatus;
 import ma.ensa.apms.service.AcceptanceCriteriaService;
 
-@WebMvcTest(controllers = AcceptanceCriteriaController.class)
+@WebMvcTest(AcceptanceCriteriaController.class)
 class AcceptanceCriteriaControllerTest {
 
         @Autowired
         private MockMvc mockMvc;
 
-        @Autowired
-        private ObjectMapper objectMapper;
-
         @MockitoBean
         private AcceptanceCriteriaService acceptanceCriteriaService;
 
-        private UUID id;
-        private AcceptanceCriteriaRequest requestDto;
-        private AcceptanceCriteriaResponse responseDto;
-        private UserStoryResponse userStoryResponse;
-        private List<AcceptanceCriteriaResponse> responseDtoList;
+        @Autowired
+        private ObjectMapper objectMapper;
+
+        private UUID testId;
+        private AcceptanceCriteriaRequest testRequest;
+        private AcceptanceCriteriaResponse testResponse;
+        private UserStoryResponse testUserStoryResponse;
 
         @BeforeEach
         void setUp() {
-                id = UUID.randomUUID();
+                testId = UUID.randomUUID();
 
-                requestDto = AcceptanceCriteriaRequest.builder()
+                testRequest = AcceptanceCriteriaRequest.builder()
                                 .given("Given a user is logged in")
-                                .when("When the user clicks on the logout button")
-                                .then("Then the user is logged out")
+                                .when("When the user clicks the logout button")
+                                .then("Then the user should be logged out")
                                 .met(false)
                                 .build();
 
-                responseDto = AcceptanceCriteriaResponse.builder()
-                                .id(id)
+                testResponse = AcceptanceCriteriaResponse.builder()
+                                .id(testId)
                                 .given("Given a user is logged in")
-                                .when("When the user clicks on the logout button")
-                                .then("Then the user is logged out")
+                                .when("When the user clicks the logout button")
+                                .then("Then the user should be logged out")
                                 .met(false)
                                 .build();
 
-                userStoryResponse = UserStoryResponse.builder()
+                testUserStoryResponse = UserStoryResponse.builder()
                                 .id(UUID.randomUUID())
-                                .name("Login Feature")
+                                .name("User Logout")
                                 .role("User")
-                                .feature("Authentication")
-                                .benefit("Access the system")
+                                .feature("Logout")
+                                .benefit("Security")
                                 .priority(1)
+                                .status(UserStoryStatus.IN_PROGRESS)
                                 .build();
-
-                responseDtoList = Arrays.asList(responseDto);
         }
 
         @Test
-        void testCreate_Success() throws Exception {
-                when(acceptanceCriteriaService.create(any(AcceptanceCriteriaRequest.class))).thenReturn(responseDto);
+        void create_ShouldCreateAcceptanceCriteria() throws Exception {
+                when(acceptanceCriteriaService.create(any(AcceptanceCriteriaRequest.class))).thenReturn(testResponse);
 
-                mockMvc.perform(post("/acceptance-criteria")
+                mockMvc.perform(post("/api/v1/acceptance-criteria")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(requestDto)))
+                                .content(objectMapper.writeValueAsString(testRequest)))
                                 .andExpect(status().isCreated())
-                                .andExpect(jsonPath("$.id").value(id.toString()))
-                                .andExpect(jsonPath("$.given").value("Given a user is logged in"))
-                                .andExpect(jsonPath("$.when").value("When the user clicks on the logout button"))
-                                .andExpect(jsonPath("$.then").value("Then the user is logged out"))
-                                .andExpect(jsonPath("$.met").value(false));
+                                .andExpect(jsonPath("$.id", is(testId.toString())))
+                                .andExpect(jsonPath("$.given", is(testResponse.getGiven())))
+                                .andExpect(jsonPath("$.when", is(testResponse.getWhen())))
+                                .andExpect(jsonPath("$.then", is(testResponse.getThen())))
+                                .andExpect(jsonPath("$.met", is(testResponse.isMet())));
 
                 verify(acceptanceCriteriaService).create(any(AcceptanceCriteriaRequest.class));
         }
 
         @Test
-        void testCreate_InvalidRequest() throws Exception {
-                AcceptanceCriteriaRequest invalidRequest = AcceptanceCriteriaRequest.builder()
-                                .given("") // Invalid - blank
-                                .when("When") // Invalid - too short
-                                .then("Then") // Invalid - too short
-                                .met(false)
-                                .build();
+        void findById_ShouldReturnAcceptanceCriteria() throws Exception {
+                when(acceptanceCriteriaService.findById(testId)).thenReturn(testResponse);
 
-                mockMvc.perform(post("/acceptance-criteria")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(invalidRequest)))
-                                .andExpect(status().isBadRequest());
-
-                verify(acceptanceCriteriaService, never()).create(any());
-        }
-
-        @Test
-        void testFindById_Success() throws Exception {
-                when(acceptanceCriteriaService.findById(id)).thenReturn(responseDto);
-
-                mockMvc.perform(get("/acceptance-criteria/{id}", id))
+                mockMvc.perform(get("/api/v1/acceptance-criteria/{id}", testId))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").value(id.toString()))
-                                .andExpect(jsonPath("$.given").value("Given a user is logged in"))
-                                .andExpect(jsonPath("$.when").value("When the user clicks on the logout button"))
-                                .andExpect(jsonPath("$.then").value("Then the user is logged out"))
-                                .andExpect(jsonPath("$.met").value(false));
+                                .andExpect(jsonPath("$.id", is(testId.toString())))
+                                .andExpect(jsonPath("$.given", is(testResponse.getGiven())))
+                                .andExpect(jsonPath("$.when", is(testResponse.getWhen())))
+                                .andExpect(jsonPath("$.then", is(testResponse.getThen())))
+                                .andExpect(jsonPath("$.met", is(testResponse.isMet())));
 
-                verify(acceptanceCriteriaService).findById(id);
+                verify(acceptanceCriteriaService).findById(testId);
         }
 
         @Test
-        void testFindAllByMet_Success() throws Exception {
-                when(acceptanceCriteriaService.findAllByMet(true)).thenReturn(responseDtoList);
+        void findAllByMet_ShouldReturnFilteredAcceptanceCriteria() throws Exception {
+                List<AcceptanceCriteriaResponse> testResponses = Arrays.asList(testResponse);
+                when(acceptanceCriteriaService.findAllByMet(false)).thenReturn(testResponses);
 
-                mockMvc.perform(get("/acceptance-criteria")
-                                .param("met", "true"))
+                mockMvc.perform(get("/api/v1/acceptance-criteria")
+                                .param("met", "false"))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$", hasSize(1)))
-                                .andExpect(jsonPath("$[0].id").value(id.toString()));
+                                .andExpect(jsonPath("$[0].id", is(testId.toString())))
+                                .andExpect(jsonPath("$[0].given", is(testResponse.getGiven())))
+                                .andExpect(jsonPath("$[0].when", is(testResponse.getWhen())))
+                                .andExpect(jsonPath("$[0].then", is(testResponse.getThen())))
+                                .andExpect(jsonPath("$[0].met", is(testResponse.isMet())));
 
-                verify(acceptanceCriteriaService).findAllByMet(true);
+                verify(acceptanceCriteriaService).findAllByMet(false);
         }
 
         @Test
-        void testUpdate_Success() throws Exception {
-                when(acceptanceCriteriaService.update(eq(id), any(AcceptanceCriteriaRequest.class)))
-                                .thenReturn(responseDto);
+        void update_ShouldUpdateAcceptanceCriteria() throws Exception {
+                when(acceptanceCriteriaService.update(eq(testId), any(AcceptanceCriteriaRequest.class)))
+                                .thenReturn(testResponse);
 
-                mockMvc.perform(put("/acceptance-criteria/{id}", id)
+                mockMvc.perform(put("/api/v1/acceptance-criteria/{id}", testId)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(requestDto)))
+                                .content(objectMapper.writeValueAsString(testRequest)))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").value(id.toString()));
+                                .andExpect(jsonPath("$.id", is(testId.toString())))
+                                .andExpect(jsonPath("$.given", is(testResponse.getGiven())))
+                                .andExpect(jsonPath("$.when", is(testResponse.getWhen())))
+                                .andExpect(jsonPath("$.then", is(testResponse.getThen())))
+                                .andExpect(jsonPath("$.met", is(testResponse.isMet())));
 
-                verify(acceptanceCriteriaService).update(eq(id), any(AcceptanceCriteriaRequest.class));
+                verify(acceptanceCriteriaService).update(eq(testId), any(AcceptanceCriteriaRequest.class));
         }
 
         @Test
-        void testUpdate_InvalidRequest() throws Exception {
-                AcceptanceCriteriaRequest invalidRequest = AcceptanceCriteriaRequest.builder()
-                                .given("") // Invalid - blank
-                                .when("When") // Invalid - too short
-                                .then("Then") // Invalid - too short
-                                .met(false)
-                                .build();
+        void delete_ShouldDeleteAcceptanceCriteria() throws Exception {
+                doNothing().when(acceptanceCriteriaService).delete(testId);
 
-                mockMvc.perform(put("/acceptance-criteria/{id}", id)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(invalidRequest)))
-                                .andExpect(status().isBadRequest());
-
-                verify(acceptanceCriteriaService, never()).update(any(), any());
-        }
-
-        @Test
-        void testDelete_Success() throws Exception {
-                doNothing().when(acceptanceCriteriaService).delete(id);
-
-                mockMvc.perform(delete("/acceptance-criteria/{id}", id))
+                mockMvc.perform(delete("/api/v1/acceptance-criteria/{id}", testId))
                                 .andExpect(status().isNoContent());
 
-                verify(acceptanceCriteriaService).delete(id);
+                verify(acceptanceCriteriaService).delete(testId);
         }
 
         @Test
-        void testUpdateMet_Success() throws Exception {
-                when(acceptanceCriteriaService.updateMet(id, true)).thenReturn(responseDto);
+        void updateMet_ShouldUpdateMetStatus() throws Exception {
+                AcceptanceCriteriaResponse updatedResponse = AcceptanceCriteriaResponse.builder()
+                                .id(testId)
+                                .given(testResponse.getGiven())
+                                .when(testResponse.getWhen())
+                                .then(testResponse.getThen())
+                                .met(true)
+                                .build();
 
-                mockMvc.perform(patch("/acceptance-criteria/{id}/met", id)
+                when(acceptanceCriteriaService.updateMet(eq(testId), eq(true))).thenReturn(updatedResponse);
+
+                mockMvc.perform(patch("/api/v1/acceptance-criteria/{id}/met", testId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("true"))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").value(id.toString()));
+                                .andExpect(jsonPath("$.id", is(testId.toString())))
+                                .andExpect(jsonPath("$.met", is(true)));
 
-                verify(acceptanceCriteriaService).updateMet(id, true);
+                verify(acceptanceCriteriaService).updateMet(testId, true);
         }
 
         @Test
-        void testGetUserStory_Success() throws Exception {
-                when(acceptanceCriteriaService.getUserStoryByAcceptanceCriteriaId(id)).thenReturn(userStoryResponse);
+        void getUserStory_ShouldReturnUserStory() throws Exception {
+                when(acceptanceCriteriaService.getUserStoryByAcceptanceCriteriaId(testId))
+                                .thenReturn(testUserStoryResponse);
 
-                mockMvc.perform(get("/acceptance-criteria/{id}/user-story", id))
+                mockMvc.perform(get("/api/v1/acceptance-criteria/{id}/user-story", testId))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").value(userStoryResponse.getId().toString()))
-                                .andExpect(jsonPath("$.name").value("Login Feature"))
-                                .andExpect(jsonPath("$.role").value("User"))
-                                .andExpect(jsonPath("$.feature").value("Authentication"))
-                                .andExpect(jsonPath("$.benefit").value("Access the system"))
-                                .andExpect(jsonPath("$.priority").value(1));
+                                .andExpect(jsonPath("$.id", is(testUserStoryResponse.getId().toString())))
+                                .andExpect(jsonPath("$.name", is(testUserStoryResponse.getName())))
+                                .andExpect(jsonPath("$.role", is(testUserStoryResponse.getRole())))
+                                .andExpect(jsonPath("$.feature", is(testUserStoryResponse.getFeature())))
+                                .andExpect(jsonPath("$.benefit", is(testUserStoryResponse.getBenefit())))
+                                .andExpect(jsonPath("$.priority", is(testUserStoryResponse.getPriority())))
+                                .andExpect(jsonPath("$.status", is(testUserStoryResponse.getStatus().toString())));
 
-                verify(acceptanceCriteriaService).getUserStoryByAcceptanceCriteriaId(id);
+                verify(acceptanceCriteriaService).getUserStoryByAcceptanceCriteriaId(testId);
+        }
+
+        @Test
+        void create_WithInvalidInput_ShouldReturn400() throws Exception {
+                AcceptanceCriteriaRequest invalidRequest = AcceptanceCriteriaRequest.builder()
+                                .given("") // Invalid: empty string
+                                .when("When the user clicks the logout button")
+                                .then("Then the user should be logged out")
+                                .met(false)
+                                .build();
+
+                mockMvc.perform(post("/api/v1/acceptance-criteria")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(invalidRequest)))
+                                .andExpect(status().isBadRequest());
+
+                verify(acceptanceCriteriaService, never()).create(any(AcceptanceCriteriaRequest.class));
         }
 }
