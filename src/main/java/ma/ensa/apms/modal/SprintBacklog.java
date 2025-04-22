@@ -9,9 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,8 +29,7 @@ public class SprintBacklog extends BaseEntity {
     private UUID id;
 
     @NotNull(message = "Name is required")
-    @Max(value = 50, message = "Name must be less than 50 characters")
-    @Min(value = 3, message = "Name must be at least 3 characters")
+    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
     private String name;
 
     @OneToMany(mappedBy = "sprintBacklog")
