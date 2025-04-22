@@ -31,8 +31,6 @@ public interface ProductBacklogService {
 
     UserStoryResponse addUserStoryToProductBacklog(UUID productBacklogId, UserStoryRequest userStoryRequest);
 
-    ProductBacklogResponse assignProjectToProductBacklog(UUID productBacklogId,
-            UUID projectId);
-
     ProjectResponse getProjectByProductBacklogId(UUID productBacklogId);
+
 }

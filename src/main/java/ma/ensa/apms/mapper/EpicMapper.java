@@ -16,5 +16,6 @@ public interface EpicMapper {
 
     EpicResponse toDto(Epic entity);
 
+    @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(EpicRequest dto, @MappingTarget Epic entity);
 }

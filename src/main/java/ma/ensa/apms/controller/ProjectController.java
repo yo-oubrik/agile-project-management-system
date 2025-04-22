@@ -28,8 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
 @RestController
 @RequestMapping("/projects")
 @RequiredArgsConstructor
@@ -48,7 +46,8 @@ public class ProjectController {
     }
 
     @GetMapping("/range")
-    public List<ProjectResponse> getProjectsBetweenDates(@Valid @RequestParam LocalDateTime startDate, @Valid @RequestParam LocalDateTime endDate) {
+    public List<ProjectResponse> getProjectsBetweenDates(@Valid @RequestParam LocalDateTime startDate,
+            @Valid @RequestParam LocalDateTime endDate) {
         return projectService.getProjectsBetweenDates(startDate, endDate);
     }
 
@@ -73,7 +72,8 @@ public class ProjectController {
     }
 
     @GetMapping
-    public List<ProjectResponse> getAllProjects(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public List<ProjectResponse> getAllProjects(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return projectService.getAllProjects(pageable);
     }
@@ -86,5 +86,11 @@ public class ProjectController {
     @DeleteMapping("/{id}")
     public void deleteProject(@PathVariable UUID id) {
         projectService.deleteProject(id);
+    }
+
+    @PatchMapping("/{id}/assign-product-backlog/{productBacklogId}")
+    public ProjectResponse assignProductBacklogToProject(
+            @PathVariable UUID id, @PathVariable UUID productBacklogId) {
+        return projectService.assignProductBacklogToProject(id, productBacklogId);
     }
 }

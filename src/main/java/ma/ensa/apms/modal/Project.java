@@ -15,7 +15,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-
 @Data
 @ToString(callSuper = false)
 @EqualsAndHashCode(callSuper = false)
@@ -29,11 +28,14 @@ public class Project extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    
+
     @NotBlank(message = "Name is required")
     private String name;
 
     private String description;
+
+    @OneToOne
+    private ProductBacklog productBacklog;
 
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;

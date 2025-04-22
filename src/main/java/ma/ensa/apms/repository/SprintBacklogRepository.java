@@ -1,11 +1,9 @@
 package ma.ensa.apms.repository;
 
-import java.util.UUID;
-
+import ma.ensa.apms.modal.SprintBacklog;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import ma.ensa.apms.modal.SprintBacklog;
+import java.util.UUID;
 
 public interface SprintBacklogRepository extends JpaRepository<SprintBacklog, UUID> {
-    
 }

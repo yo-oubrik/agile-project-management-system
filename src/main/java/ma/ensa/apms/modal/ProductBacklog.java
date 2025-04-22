@@ -41,4 +41,9 @@ public class ProductBacklog extends BaseEntity {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "productBacklog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Epic> epics;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "productBacklog", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SprintBacklog> sprintBacklogs;
 }

@@ -3,8 +3,11 @@ package ma.ensa.apms.service.impl;
 import ma.ensa.apms.dto.Request.ProjectRequest;
 import ma.ensa.apms.dto.Response.ProjectResponse;
 import ma.ensa.apms.exception.BusinessException;
+import ma.ensa.apms.exception.ResourceNotFoundException;
+import ma.ensa.apms.modal.ProductBacklog;
 import ma.ensa.apms.modal.Project;
 import ma.ensa.apms.modal.enums.ProjectStatus;
+import ma.ensa.apms.repository.ProductBacklogRepository;
 import ma.ensa.apms.repository.ProjectRepository;
 import ma.ensa.apms.service.ProjectService;
 import ma.ensa.apms.mapper.ProjectMapper;
@@ -12,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -24,6 +28,7 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
+    private final ProductBacklogRepository productBacklogRepository;
 
     @Override
     public ProjectResponse createProject(ProjectRequest request) {
@@ -51,7 +56,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
         project.setStartDate(startDate);
-        if(project.getEndDate() != null && project.getEndDate().isBefore(startDate)) {
+        if (project.getEndDate() != null && project.getEndDate().isBefore(startDate)) {
             throw new BusinessException("Start date must be before end date");
         }
         project = projectRepository.save(project);
@@ -63,7 +68,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
         project.setEndDate(endDate);
-        if(project.getStartDate() != null && project.getStartDate().isAfter(endDate)) {
+        if (project.getStartDate() != null && project.getStartDate().isAfter(endDate)) {
             throw new BusinessException("End date must be after start date");
         }
         project = projectRepository.save(project);
@@ -108,5 +113,24 @@ public class ProjectServiceImpl implements ProjectService {
                 .stream()
                 .map(projectMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public ProjectResponse assignProductBacklogToProject(UUID projectId, UUID productBacklogId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        if (project.getProductBacklog() != null) {
+            throw new IllegalStateException("This project already has a ProductBacklog assigned");
+        }
+
+        ProductBacklog productBacklog = productBacklogRepository.findById(productBacklogId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product backlog not found"));
+
+        project.setProductBacklog(productBacklog);
+        projectRepository.save(project);
+
+        return projectMapper.toResponse(project);
     }
 }

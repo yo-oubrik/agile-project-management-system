@@ -11,13 +11,25 @@ import ma.ensa.apms.modal.enums.ProjectStatus;
 
 public interface ProjectService {
     ProjectResponse createProject(ProjectRequest request);
+
     ProjectResponse updateProject(UUID id, ProjectRequest request);
+
     void deleteProject(UUID id);
+
     ProjectResponse updateProjectStartDate(UUID id, LocalDateTime startDate);
+
     ProjectResponse updateProjectEndDate(UUID id, LocalDateTime endDate);
+
     ProjectResponse updateProjectStatus(UUID id, ProjectStatus status);
+
     ProjectResponse getProject(UUID id);
+
     List<ProjectResponse> getAllProjects(Pageable pageable);
+
     List<ProjectResponse> getProjectsByStatus(ProjectStatus status);
+
     List<ProjectResponse> getProjectsBetweenDates(LocalDateTime startDate, LocalDateTime endDate);
+
+    ProjectResponse assignProductBacklogToProject(UUID projectId, UUID productBacklogId);
+
 }
